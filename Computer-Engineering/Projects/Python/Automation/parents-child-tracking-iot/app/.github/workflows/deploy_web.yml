@@ -2,9 +2,9 @@ name: Deploy Flutter Web to GitHub Pages
 
 on:
   push:
-    branches: [ main, master ] # Dispara quando houver commit na branch principal
+    branches: [ main, master ]
     paths:
-      - 'parents-child-tracking-iot/app/**'
+      - 'Computer-Engineering/Projects/Python/Automation/parents-child-tracking-iot/app/**'
 
   workflow_dispatch:
 
@@ -34,14 +34,14 @@ jobs:
 
       - name: Install dependencies & Build Web
         run: |
-          cd parents-child-tracking-iot/app
+          cd Computer-Engineering/Projects/Python/Automation/parents-child-tracking-iot/app
           flutter pub get
           flutter build web --release
 
       - name: Upload artifact for GitHub Pages
         uses: actions/upload-pages-artifact@v3
         with:
-          path: 'parents-child-tracking-iot/app/build/web'
+          path: 'Computer-Engineering/Projects/Python/Automation/parents-child-tracking-iot/app/build/web'
 
   deploy:
     environment:
