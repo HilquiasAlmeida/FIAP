@@ -4,7 +4,7 @@ on:
   push:
     branches: [ main, master ]
     paths:
-      - 'Computer-Engineering/Projects/Python/Automation/parents-child-tracking-iot/app/**'
+      - 'Computer-Engineering/Projects/Python/Automation/child-tracking-iot/parents-child-tracking-iot/app/**'
 
   workflow_dispatch:
 
@@ -41,7 +41,7 @@ jobs:
       - name: Upload artifact for GitHub Pages
         uses: actions/upload-pages-artifact@v3
         with:
-          path: 'Computer-Engineering/Projects/Python/Automation/parents-child-tracking-iot/app/build/web'
+          path: 'Computer-Engineering/Projects/Python/Automation/child-tracking-iot/parents-child-tracking-iot/app/build/web'
           name: parents-app-artifact
 
   deploy:
