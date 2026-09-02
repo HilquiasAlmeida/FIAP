@@ -35,9 +35,8 @@ jobs:
       - name: Install dependencies & Build Web
         run: |
           cd Computer-Engineering/Projects/Python/Automation/parents-child-tracking-iot/app
-          flutter create . --platforms=web --overwrite
           flutter pub get
-          flutter build web --release
+          flutter build web --release --base-href "/FIAP/"
 
       - name: Upload artifact for GitHub Pages
         uses: actions/upload-pages-artifact@v3
