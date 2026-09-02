@@ -16,7 +16,7 @@ Este projeto consiste em um sistema de rastreamento em tempo real para crianças
 ## 📁 Estrutura do Repositório
 
 ```text
-child-tracking-iot/
+child tracking/
 ├── server.py             # Servidor backend Flask + Conexão PostgreSQL
 ├── requirements.txt      # Dependências do Python
 ├── esp32_tracker.py      # Código para o microcontrolador ESP32 (MicroPython)
@@ -30,7 +30,7 @@ Antes de iniciar, certifique-se de ter instalado em sua máquina:
 
 * PostgreSQL instalado e em execução (localmente ou via nuvem)
 
-* Uma IDE para o ESP32 (como Thonny ou VS Code com suporte a MicroPython)
+* Uma IDE para o ESP32 (como Thonny ou PyCharm com suporte a MicroPython)
 
 ##  🗄️ Configuração do Banco de Dados (PostgreSQL)
  1. Abra o seu cliente PostgreSQL (pgAdmin, DBeaver ou terminal psql) e crie um banco de dados para o projeto:
@@ -44,8 +44,8 @@ CREATE DATABASE tracking_db;
 1. Clone este repositório ou baixe os arquivos para o seu computador:
 ```
 Bash
-git clone https://github.com/HilquiasAlmeida/child-tracking-iot.git
-cd rastreador-crianca-iot
+git clone https://github.com/HilquiasAlmeida/child tracking.git
+cd child tracking
 ```
 
 2. Instale as dependências do Python listadas no arquivo requirements.txt:
