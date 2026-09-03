@@ -7,7 +7,6 @@ def main(page: ft.Page):
     page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
     page.bgcolor = ft.Colors.INDIGO_50
 
-    # Simulação de busca de dados
     def fetch_location():
         return {
             "device_id": "esp32_crianca_01",
@@ -26,7 +25,9 @@ def main(page: ft.Page):
             if email_ctrl.value and pass_ctrl.value:
                 show_dashboard()
             else:
-                page.open(ft.SnackBar(ft.Text("Por favor, preencha e-mail e senha.")))
+                page.snack_bar = ft.SnackBar(ft.Text("Por favor, preencha e-mail e senha."))
+                page.snack_bar.open = True
+                page.update()
 
         page.clean()
         page.add(
@@ -107,7 +108,9 @@ def main(page: ft.Page):
         id_ctrl = ft.TextField(label="ID do Hardware (ex: esp32_02)", border=ft.InputBorder.OUTLINE)
 
         def save_device(evt):
-            page.open(ft.SnackBar(ft.Text("Dispositivo vinculado com sucesso!")))
+            page.snack_bar = ft.SnackBar(ft.Text("Dispositivo vinculado com sucesso!"))
+            page.snack_bar.open = True
+            page.update()
             show_dashboard()
 
         page.clean()
@@ -203,7 +206,6 @@ def main(page: ft.Page):
         )
         page.update()
 
-    # Iniciar no Login
     show_login()
 
 if __name__ == "__main__":
