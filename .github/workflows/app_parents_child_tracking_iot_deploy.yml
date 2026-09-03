@@ -36,7 +36,8 @@ jobs:
           cd Computer-Engineering/Projects/Python/Automation/parents-child-tracking-iot/app
           pip install --upgrade pip
           pip install -r requirements.txt
-          flet build web --base-href "/FIAP/"
+          flet build web
+          sed -i 's|<base href="/">|<base href="/FIAP/">|g' build/web/index.html
 
       - name: Upload artifact for GitHub Pages
         uses: actions/upload-pages-artifact@v3
