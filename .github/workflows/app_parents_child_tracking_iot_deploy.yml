@@ -57,6 +57,12 @@ jobs:
             exit 1
           fi
 
+          # Truque essencial para o GitHub Pages não dar erro em rotas do Flet
+          if [ -f "$BUILD_SRC/index.html" ]; then
+            cp "$BUILD_SRC/index.html" "$BUILD_SRC/404.html"
+            echo "Arquivo 404.html gerado com sucesso para suporte a rotas SPA."
+          fi
+
           mkdir -p "$WORKSPACE_DIR/dist_mobile"
           cp -r "$BUILD_SRC"/* "$WORKSPACE_DIR/dist_mobile/"
 
@@ -116,8 +122,6 @@ jobs:
             echo "Nenhuma alteração detectada no código do app mobile (branch já atualizada)."
           fi
 
-          # O link agora é impresso SEMPRE no final, independentemente de haver commit ou não
-          echo "===================================================="
-          echo "📱 APP MOBILE PUBLICADO COM SUCESSO!"
-          echo "🔗 Link: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/family-trackings/app-mobile/"
-          echo "===================================================="
+          # Adiciona o link de acesso diretamente na página de resumo do GitHub Actions
+          echo "### 📱 APP MOBILE PUBLICADO COM SUCESSO!" >> $GITHUB_STEP_SUMMARY
+          echo "🔗 [Acessar App Mobile Online](https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/family-trackings/app-mobile/)" >> $GITHUB_STEP_SUMMARY
