@@ -236,12 +236,16 @@ jobs:
                           padding=20,
                           expand=True
                       ),
-                      ft.FloatingActionButton(
-                          text="Atualizar",
-                          icon=ft.Icons.REFRESH,
-                          bgcolor=ft.Colors.INDIGO,
-                          color=ft.Colors.WHITE,
-                          on_click=refresh_data
+                      ft.ElevatedButton(
+                          text="Vincular Novo Dispositivo",
+                          icon=ft.Icons.ADD,
+                          bgcolor=ft.Colors.BLUE,       # Defina a cor de fundo desejada
+                          color=ft.Colors.WHITE,        # Cor do texto e do ícone
+                          style=ft.ButtonStyle(
+                              shape=ft.RoundedRectangleBorder(radius=8),  # Ou ft.StadiumBorder() para bordas totalmente arredondadas
+                              padding=15
+                          ),
+                          on_click=sua_funcao_de_clique
                       )
                   )
                   page.update()
