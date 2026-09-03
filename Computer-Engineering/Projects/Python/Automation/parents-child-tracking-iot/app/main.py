@@ -89,7 +89,8 @@ def main(page: ft.Page):
                         ),
                         elevation=3,
                     ),
-                ], padding=20),
+                ]), # <-- Padding removido da Column e passado para o Container abaixo
+                padding=20,
                 expand=True,
             ),
             ft.FloatingActionButton(
@@ -133,7 +134,8 @@ def main(page: ft.Page):
                         color=ft.Colors.WHITE, 
                         width=float("inf")
                     )
-                ], spacing=15, padding=20),
+                ], spacing=15),
+                padding=20,
                 expand=True
             )
         )
@@ -193,7 +195,8 @@ def main(page: ft.Page):
                         ),
                         elevation=4
                     )
-                ], padding=20, alignment=ft.MainAxisAlignment.CENTER),
+                ], alignment=ft.MainAxisAlignment.CENTER),
+                padding=20,
                 expand=True
             ),
             ft.FloatingActionButton(
