@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'app_backend_main.dart';
 
+void main() {
+  runApp(const ParentsTrackerApp());
+}
+
 class ParentsTrackerApp extends StatelessWidget {
   const ParentsTrackerApp({super.key});
 
