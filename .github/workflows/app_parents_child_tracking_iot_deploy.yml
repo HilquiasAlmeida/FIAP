@@ -39,7 +39,7 @@ jobs:
           requests>=2.31.0
           EOF
 
-          # Cria o main.py completo com o botão corrigido (largura total)
+          # Cria o main.py com os botões corrigidos (texto posicional)
           cat << 'EOF' > "$TARGET_DIR/main.py"
           import flet as ft
 
@@ -136,7 +136,7 @@ jobs:
                       ),
                       ft.Container(
                           content=ft.ElevatedButton(
-                              text="Vincular Novo Dispositivo",
+                              "Vincular Novo Dispositivo",
                               icon=ft.Icons.ADD,
                               bgcolor=ft.Colors.INDIGO,
                               color=ft.Colors.WHITE,
@@ -246,7 +246,7 @@ jobs:
                       ),
                       ft.Container(
                           content=ft.ElevatedButton(
-                              text="Atualizar",
+                              "Atualizar",
                               icon=ft.Icons.REFRESH,
                               bgcolor=ft.Colors.INDIGO,
                               color=ft.Colors.WHITE,
