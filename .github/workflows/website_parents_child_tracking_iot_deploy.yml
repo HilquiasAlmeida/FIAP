@@ -4,7 +4,7 @@ on:
   push:
     branches: [ main, master ]
     paths:
-      - 'Automation/family-trackings/website/**'
+      - 'Computer-Engineering/Projects/Python/Automation/family-trackings/parents-child-tracking-iot/web/**'
       - '.github/workflows/website_parents_child_tracking_iot_deploy.yml'
   workflow_dispatch:
 
@@ -18,41 +18,47 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Deploy Website to gh-pages (Isolated)
+      - name: Deploy Website using Exact Path
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          WORKSPACE_DIR="$GITHUB_WORKSPACE"
+          
+          # Caminho exato fornecido por você
+          WEB_DIR="$WORKSPACE_DIR/Computer-Engineering/Projects/Python/Automation/family-trackings/parents-child-tracking-iot/web"
+          
+          if [ ! -d "$WEB_DIR" ]; then
+            echo "Erro: O diretório do website não foi encontrado em $WEB_DIR"
+            exit 1
+          fi
+          
+          echo "Pasta web encontrada com sucesso em: $WEB_DIR"
+
           git config --global user.name "GitHub Actions Bot"
           git config --global user.email "actions@github.com"
 
-          # Garante que a pasta de origem existe e tem um index.html básico
-          SRC_DIR="Automation/family-trackings/website"
-          mkdir -p "$SRC_DIR"
-          if [ ! -f "$SRC_DIR/index.html" ]; then
-            echo "<h1 style='font-family:Arial;'>Website - Family Trackings</h1>" > "$SRC_DIR/index.html"
-          fi
+          cd "$WORKSPACE_DIR"
+          mkdir -p temp_gh_pages_web
+          cd temp_gh_pages_web
 
-          # Clona apenas a branch gh-pages para uma pasta temporária (ou cria se não existir)
-          git clone --branch gh-pages --single-branch https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git gh_pages_branch || \
-          ( mkdir gh_pages_branch && cd gh_pages_branch && git init && git checkout -b gh-pages && cd .. )
+          git clone --branch gh-pages --single-branch https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git . || \
+          ( git init && git checkout -b gh-pages && git remote add origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git )
 
-          cd gh_pages_branch
-          git remote remove origin || true
-          git remote add origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
           git checkout gh-pages || git checkout -b gh-pages
 
-          # Prepara a subpasta específica do website sem afetar as outras
+          # Prepara a subpasta exata no GitHub Pages
           mkdir -p family-trackings/website
           rm -rf family-trackings/website/*
+          cp -r "$WEB_DIR"/* family-trackings/website/
 
-          # Copia os arquivos novos do site
-          cp -r ../$SRC_DIR/* family-trackings/website/
-
-          # Verifica se houve mudanças e faz o commit/push isolado
           git add .
           if git status --porcelain | grep -q .; then
-            git commit -m "Deploy independente: Atualizando website do family-trackings [skip ci]"
+            git commit -m "Deploy independente: Atualizando website [skip ci]"
             git push origin gh-pages
+            echo "===================================================="
+            echo "🌐 WEBSITE PUBLICADO COM SUCESSO!"
+            echo "🔗 Link: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/family-trackings/website/"
+            echo "===================================================="
           else
             echo "Nenhuma alteração detectada para o website."
           fi
