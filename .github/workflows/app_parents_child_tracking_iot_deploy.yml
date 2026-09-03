@@ -24,7 +24,7 @@ jobs:
           python-version: '3.10'
           cache: 'pip'
 
-      - name: Build Flet Web App and Prepare Artifact
+      - name: Build Flet Web App (Python)
         run: |
           WORKSPACE_DIR="$GITHUB_WORKSPACE"
           REQ_FILE="$WORKSPACE_DIR/Computer-Engineering/Projects/Python/Automation/family-trackings/parents-child-tracking-iot/app/requirements.txt"
@@ -43,9 +43,10 @@ jobs:
 
           python -m pip install --upgrade pip
           python -m pip install -r "$REQ_FILE"
+          python -m pip install flet
           
           cd "$APP_DIR"
-          # Compilação exata para o subdiretório do GitHub Pages
+          # Compilação rigorosa com base-url correta e hash routing para evitar tela em branco
           flet build web --yes --base-url /FIAP/family-trackings/app-mobile/ --route-url-strategy hash
 
           BUILD_SRC="build/web"
@@ -58,7 +59,7 @@ jobs:
             exit 1
           fi
 
-          # Cria o 404.html para suporte a rotas
+          # Cria o fallback 404.html para o GitHub Pages não quebrar rotas do Flet
           if [ -f "$BUILD_SRC/index.html" ]; then
             cp "$BUILD_SRC/index.html" "$BUILD_SRC/404.html"
           fi
@@ -121,6 +122,6 @@ jobs:
             echo "Nenhuma alteração detectada no código do app mobile."
           fi
 
-          # Link com target="_blank" garantido para abrir em nova aba no Summary
+          # Link gerado no Summary da Actions
           echo "### 📱 APP MOBILE PUBLICADO COM SUCESSO!" >> $GITHUB_STEP_SUMMARY
           echo "<p><a href=\"https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/family-trackings/app-mobile/\" target=\"_blank\" style=\"font-size: 16px; font-weight: bold;\">🔗 Clique aqui para abrir o App Mobile em uma nova aba ↗</a></p>" >> $GITHUB_STEP_SUMMARY
