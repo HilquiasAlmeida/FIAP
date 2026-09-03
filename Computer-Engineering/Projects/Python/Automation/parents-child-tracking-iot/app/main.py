@@ -184,7 +184,7 @@ def main(page: ft.Page):
                                 ft.ElevatedButton(
                                     "Abrir no Google Maps", 
                                     icon=ft.Icons.MAP, 
-                                    url=maps_url,  # Propriedade nativa do Flet para abrir links na Web
+                                    url=maps_url, 
                                     bgcolor=ft.Colors.INDIGO, 
                                     color=ft.Colors.WHITE, 
                                     width=float("inf")
@@ -199,10 +199,12 @@ def main(page: ft.Page):
                 expand=True
             ),
             ft.FloatingActionButton(
-                icon=ft.Icons.REFRESH, 
-                on_click=refresh_data, 
-                bgcolor=ft.Colors.INDIGO, 
-                foreground_color=ft.Colors.WHITE,
+                content=ft.Row([
+                    ft.Icon(ft.Icons.REFRESH, color=ft.Colors.WHITE),
+                    ft.Text("Atualizar", color=ft.Colors.WHITE)
+                ], tight=True),
+                bgcolor=ft.Colors.INDIGO,
+                on_click=refresh_data,
                 tooltip="Atualizar Posição"
             )
         )
