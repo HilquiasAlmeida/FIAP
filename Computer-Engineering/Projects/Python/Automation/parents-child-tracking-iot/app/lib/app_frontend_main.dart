@@ -196,7 +196,9 @@ class _AddDeviceScreenState extends State<AddDeviceScreen> {
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: () {
-                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Dispositivo vinculado com sucesso!')));
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Dispositivo vinculado com sucesso!')),
+                  );
                   Navigator.pop(context);
                 },
                 style: ElevatedButton.styleFrom(backgroundColor: Colors.indigo, foregroundColor: Colors.white, padding: const EdgeInsets.symmetric(vertical: 14)),
@@ -231,7 +233,6 @@ class _TrackingScreenState extends State<TrackingScreen> {
 
   Future<void> loadLocation() async {
     setState(() { isLoading = true; });
-    // Chama a lógica de backend que criamos no backend_main.dart
     var data = await ApiService.fetchLocation();
     setState(() {
       locationData = data;
