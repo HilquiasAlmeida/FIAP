@@ -5,6 +5,7 @@ on:
     branches: [ main, master ]
     paths:
       - 'Computer-Engineering/Projects/Python/Automation/family-trackings/parents-child-tracking-iot/app/**'
+      - 'FIAP/Computer-Engineering/Projects/Python/Automation/family-trackings/parents-child-tracking-iot/app/**'
 
   workflow_dispatch:
 
@@ -31,8 +32,16 @@ jobs:
           python-version: '3.10'
           cache: 'pip'
 
+      - name: Inspect Workspace Directory
+        run: |
+          echo "=== O que existe na raiz do Workspace? ==="
+          ls -la
+          echo "=========================================="
+
       - name: Install dependencies & Build Flet Web
         run: |
+          # Se o comando acima mostrar 'FIAP' na raiz, use com FIAP/. 
+          # Se mostrar 'Computer-Engineering' direto na raiz, use sem FIAP/.
           cd Computer-Engineering/Projects/Python/Automation/family-trackings/parents-child-tracking-iot/app
           pip install --upgrade pip
           pip install -r requirements.txt
