@@ -28,13 +28,14 @@ jobs:
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.19.x'
+          flutter-version: 'stable'
           channel: 'stable'
           cache: true
 
       - name: Install dependencies & Build Web
         run: |
           cd Computer-Engineering/Projects/Python/Automation/parents-child-tracking-iot/app
+          flutter clean
           flutter pub get
           flutter build web --release --target lib/app_frontend_main.dart --base-href "/FIAP/"
 
