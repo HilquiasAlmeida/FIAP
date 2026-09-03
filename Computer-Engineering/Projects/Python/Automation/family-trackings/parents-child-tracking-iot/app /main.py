@@ -195,7 +195,7 @@ def main(page: ft.Page):
                         elevation=4
                     )
                 ], alignment=ft.MainAxisAlignment.CENTER),
-                padding=20,
+                padding=40,
                 expand=True
             ),
             ft.FloatingActionButton(
