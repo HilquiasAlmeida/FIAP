@@ -39,7 +39,7 @@ jobs:
           requests>=2.31.0
           EOF
 
-          # Cria o main.py com o botão corrigido
+          # Cria o main.py corrigido
           cat << 'EOF' > "$TARGET_DIR/main.py"
           import flet as ft
 
@@ -244,12 +244,20 @@ jobs:
                           padding=20,
                           expand=True
                       ),
-                      ft.FloatingActionButton(
-                          text="Atualizar",
-                          icon=ft.Icons.REFRESH,
-                          bgcolor=ft.Colors.INDIGO,
-                          color=ft.Colors.WHITE,
-                          on_click=refresh_data
+                      ft.Container(
+                          content=ft.ElevatedButton(
+                              text="Atualizar",
+                              icon=ft.Icons.REFRESH,
+                              bgcolor=ft.Colors.INDIGO,
+                              color=ft.Colors.WHITE,
+                              style=ft.ButtonStyle(
+                                  shape=ft.RoundedRectangleBorder(radius=8),
+                                  padding=15
+                              ),
+                              on_click=refresh_data
+                          ),
+                          padding=20,
+                          alignment=ft.alignment.center
                       )
                   )
                   page.update()
