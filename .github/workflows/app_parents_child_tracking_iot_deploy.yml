@@ -47,7 +47,6 @@ jobs:
           cd "$APP_DIR"
           flet build web --yes --base-url /FIAP/family-trackings/app-mobile/
 
-          # Localiza a build gerada
           BUILD_SRC="build/web"
           if [ ! -d "$BUILD_SRC" ]; then
             BUILD_SRC=$(find . -type d -name "web" | grep "build" | head -n 1)
@@ -58,10 +57,8 @@ jobs:
             exit 1
           fi
 
-          # Copia para uma pasta limpa e rasa na raiz para o upload funcionar 100%
           mkdir -p "$WORKSPACE_DIR/dist_mobile"
           cp -r "$BUILD_SRC"/* "$WORKSPACE_DIR/dist_mobile/"
-          echo "Arquivos de build copiados com sucesso para dist_mobile"
 
       - name: Upload Web Build Artifact
         uses: actions/upload-artifact@v4
@@ -114,10 +111,13 @@ jobs:
           if git status --porcelain | grep -q .; then
             git commit -m "Deploy independente: Atualizando app-mobile [skip ci]"
             git push origin gh-pages
-            echo "===================================================="
-            echo "📱 APP MOBILE PUBLICADO COM SUCESSO!"
-            echo "🔗 Link: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/family-trackings/app-mobile/"
-            echo "===================================================="
+            echo "Alterações enviadas com sucesso para o GitHub Pages."
           else
-            echo "Nenhuma alteração detectada para o app mobile."
+            echo "Nenhuma alteração detectada no código do app mobile (branch já atualizada)."
           fi
+
+          # O link agora é impresso SEMPRE no final, independentemente de haver commit ou não
+          echo "===================================================="
+          echo "📱 APP MOBILE PUBLICADO COM SUCESSO!"
+          echo "🔗 Link: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/family-trackings/app-mobile/"
+          echo "===================================================="
