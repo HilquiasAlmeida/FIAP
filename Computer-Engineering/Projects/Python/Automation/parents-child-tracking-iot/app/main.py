@@ -89,15 +89,16 @@ def main(page: ft.Page):
                         ),
                         elevation=3,
                     ),
-                ]), # <-- Padding removido da Column e passado para o Container abaixo
+                ]),
                 padding=20,
                 expand=True,
             ),
             ft.FloatingActionButton(
-                icon=ft.Icons.ADD,
-                text="Vincular Novo Dispositivo",
+                content=ft.Row([
+                    ft.Icon(ft.Icons.ADD, color=ft.Colors.WHITE),
+                    ft.Text("Vincular Novo Dispositivo", color=ft.Colors.WHITE)
+                ], tight=True),
                 bgcolor=ft.Colors.INDIGO,
-                color=ft.Colors.WHITE,
                 on_click=go_to_add
             )
         )
