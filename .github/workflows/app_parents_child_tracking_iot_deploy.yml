@@ -3,9 +3,6 @@ name: Deploy Flet Web to GitHub Pages
 on:
   push:
     branches: [ main, master ]
-    paths:
-      - '/Computer-Engineering/Projects/Python/Automation/family-trackings/parents-child-tracking-iot/app/**'
-
   workflow_dispatch:
 
 permissions:
@@ -33,6 +30,7 @@ jobs:
 
       - name: Install dependencies & Build Flet Web
         run: |
+          mkdir -p Computer-Engineering/Projects/Python/Automation/family-trackings/parents-child-tracking-iot/app
           cd Computer-Engineering/Projects/Python/Automation/family-trackings/parents-child-tracking-iot/app
           pip install --upgrade pip
           pip install -r requirements.txt
