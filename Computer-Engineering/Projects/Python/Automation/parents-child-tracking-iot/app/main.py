@@ -5,9 +5,9 @@ def main(page: ft.Page):
     page.theme_mode = ft.ThemeMode.LIGHT
     page.vertical_alignment = ft.MainAxisAlignment.CENTER
     page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
-    page.bgcolor = ft.colors.INDIGO_50
+    page.bgcolor = ft.Colors.INDIGO_50
 
-    # Simulação de busca de dados (pode ser conectado ao seu server.py posteriormente)
+    # Simulação de busca de dados
     def fetch_location():
         return {
             "device_id": "esp32_crianca_01",
@@ -33,18 +33,18 @@ def main(page: ft.Page):
             ft.Card(
                 content=ft.Container(
                     content=ft.Column([
-                        ft.Icon(ft.icons.SECURITY, size=64, color=ft.colors.INDIGO),
-                        ft.Text("SafeChild IoT", size=24, weight="bold", color=ft.colors.INDIGO),
-                        ft.Text("Área de Monitoramento dos Pais", color=ft.colors.GREY_700),
-                        ft.Divider(height=20, color=ft.colors.TRANSPARENT),
+                        ft.Icon(ft.Icons.SECURITY, size=64, color=ft.Colors.INDIGO),
+                        ft.Text("SafeChild IoT", size=24, weight="bold", color=ft.Colors.INDIGO),
+                        ft.Text("Área de Monitoramento dos Pais", color=ft.Colors.GREY_700),
+                        ft.Divider(height=20, color=ft.Colors.TRANSPARENT),
                         email_ctrl,
                         pass_ctrl,
-                        ft.Divider(height=10, color=ft.colors.TRANSPARENT),
+                        ft.Divider(height=10, color=ft.Colors.TRANSPARENT),
                         ft.ElevatedButton(
                             "Entrar", 
                             on_click=handle_login, 
-                            bgcolor=ft.colors.INDIGO, 
-                            color=ft.colors.WHITE, 
+                            bgcolor=ft.Colors.INDIGO, 
+                            color=ft.Colors.WHITE, 
                             width=300
                         )
                     ], horizontal_alignment=ft.CrossAxisAlignment.CENTER, spacing=15),
@@ -67,23 +67,23 @@ def main(page: ft.Page):
         page.add(
             ft.AppBar(
                 title=ft.Text("Meus Filhos Monitorados"),
-                bgcolor=ft.colors.INDIGO,
-                color=ft.colors.WHITE,
+                bgcolor=ft.Colors.INDIGO,
+                color=ft.Colors.WHITE,
                 actions=[
-                    ft.IconButton(ft.icons.LOGOUT, on_click=show_login, icon_color=ft.colors.WHITE)
+                    ft.IconButton(ft.Icons.LOGOUT, on_click=show_login, icon_color=ft.Colors.WHITE)
                 ]
             ),
             ft.Container(
                 content=ft.Column([
-                    ft.Text("Dispositivos Conectados", size=18, weight="bold", color=ft.colors.BLACK87),
-                    ft.Divider(height=10, color=ft.colors.TRANSPARENT),
+                    ft.Text("Dispositivos Conectados", size=18, weight="bold", color=ft.Colors.BLACK87),
+                    ft.Divider(height=10, color=ft.Colors.TRANSPARENT),
                     ft.Card(
                         content=ft.ListTile(
-                            leading=ft.CircleAvatar(content=ft.Icon(ft.icons.CHILD_CARE, color=ft.colors.WHITE), bgcolor=ft.colors.INDIGO),
+                            leading=ft.CircleAvatar(content=ft.Icon(ft.Icons.CHILD_CARE, color=ft.Colors.WHITE), bgcolor=ft.Colors.INDIGO),
                             title=ft.Text("Lucas Almeida", weight="bold"),
                             subtitle=ft.Text("ID: esp32_crianca_01\nStatus: Ativo"),
                             is_three_line=True,
-                            trailing=ft.Icon(ft.icons.ARROW_FORWARD_IOS, size=16),
+                            trailing=ft.Icon(ft.Icons.ARROW_FORWARD_IOS, size=16),
                             on_click=go_to_tracking,
                         ),
                         elevation=3,
@@ -92,10 +92,10 @@ def main(page: ft.Page):
                 expand=True,
             ),
             ft.FloatingActionButton(
-                icon=ft.icons.ADD,
+                icon=ft.Icons.ADD,
                 text="Vincular Novo Dispositivo",
-                bgcolor=ft.colors.INDIGO,
-                color=ft.colors.WHITE,
+                bgcolor=ft.Colors.INDIGO,
+                color=ft.Colors.WHITE,
                 on_click=go_to_add
             )
         )
@@ -114,20 +114,20 @@ def main(page: ft.Page):
         page.add(
             ft.AppBar(
                 title=ft.Text("Vincular Dispositivo IoT"), 
-                bgcolor=ft.colors.INDIGO, 
-                color=ft.colors.WHITE,
-                leading=ft.IconButton(ft.icons.ARROW_BACK, on_click=lambda _: show_dashboard(), icon_color=ft.colors.WHITE)
+                bgcolor=ft.Colors.INDIGO, 
+                color=ft.Colors.WHITE,
+                leading=ft.IconButton(ft.Icons.ARROW_BACK, on_click=lambda _: show_dashboard(), icon_color=ft.Colors.WHITE)
             ),
             ft.Container(
                 content=ft.Column([
                     name_ctrl,
                     id_ctrl,
-                    ft.Divider(height=10, color=ft.colors.TRANSPARENT),
+                    ft.Divider(height=10, color=ft.Colors.TRANSPARENT),
                     ft.ElevatedButton(
                         "Salvar e Vincular", 
                         on_click=save_device, 
-                        bgcolor=ft.colors.INDIGO, 
-                        color=ft.colors.WHITE, 
+                        bgcolor=ft.Colors.INDIGO, 
+                        color=ft.Colors.WHITE, 
                         width=float("inf")
                     )
                 ], spacing=15, padding=20),
@@ -143,7 +143,7 @@ def main(page: ft.Page):
         lat_text = ft.Text(f"Latitude: {data['latitude']}")
         lon_text = ft.Text(f"Longitude: {data['longitude']}")
         time_text = ft.Text(f"Última Att: {data['timestamp']}")
-        status_chip = ft.Chip(label=ft.Text(data['status'], color=ft.colors.WHITE), bgcolor=ft.colors.GREEN)
+        status_chip = ft.Chip(label=ft.Text(data['status'], color=ft.Colors.WHITE), bgcolor=ft.Colors.GREEN)
 
         def refresh_data(evt):
             new_data = fetch_location()
@@ -160,29 +160,29 @@ def main(page: ft.Page):
         page.add(
             ft.AppBar(
                 title=ft.Text(f"Rastreando: {data['device_id']}"), 
-                bgcolor=ft.colors.INDIGO, 
-                color=ft.colors.WHITE,
-                leading=ft.IconButton(ft.icons.ARROW_BACK, on_click=lambda _: show_dashboard(), icon_color=ft.colors.WHITE)
+                bgcolor=ft.Colors.INDIGO, 
+                color=ft.Colors.WHITE,
+                leading=ft.IconButton(ft.Icons.ARROW_BACK, on_click=lambda _: show_dashboard(), icon_color=ft.Colors.WHITE)
             ),
             ft.Container(
                 content=ft.Column([
                     ft.Card(
                         content=ft.Container(
                             content=ft.Column([
-                                ft.Text("Localização em Tempo Real", size=20, weight="bold", color=ft.colors.INDIGO),
-                                ft.Divider(color=ft.colors.INDIGO_100),
+                                ft.Text("Localização em Tempo Real", size=20, weight="bold", color=ft.Colors.INDIGO),
+                                ft.Divider(color=ft.Colors.INDIGO_100),
                                 ft.Text(f"Dispositivo: {data['device_id']}"),
                                 lat_text,
                                 lon_text,
                                 time_text,
                                 ft.Row([ft.Text("Status: "), status_chip]),
-                                ft.Divider(height=10, color=ft.colors.TRANSPARENT),
+                                ft.Divider(height=10, color=ft.Colors.TRANSPARENT),
                                 ft.ElevatedButton(
                                     "Abrir no Google Maps", 
-                                    icon=ft.icons.MAP, 
+                                    icon=ft.Icons.MAP, 
                                     on_click=open_map, 
-                                    bgcolor=ft.colors.INDIGO, 
-                                    color=ft.colors.WHITE, 
+                                    bgcolor=ft.Colors.INDIGO, 
+                                    color=ft.Colors.WHITE, 
                                     width=float("inf")
                                 )
                             ], spacing=10),
@@ -194,10 +194,10 @@ def main(page: ft.Page):
                 expand=True
             ),
             ft.FloatingActionButton(
-                icon=ft.icons.REFRESH, 
+                icon=ft.Icons.REFRESH, 
                 on_click=refresh_data, 
-                bgcolor=ft.colors.INDIGO, 
-                color=ft.colors.WHITE, 
+                bgcolor=ft.Colors.INDIGO, 
+                color=ft.Colors.WHITE, 
                 tooltip="Atualizar Posição"
             )
         )
