@@ -1,1 +1,51 @@
+name: Deploy System - Family Trackings
 
+on:
+  push:
+    branches: [ main, master ]
+    paths:
+      - 'Automation/family-trackings/system/**'
+      - '.github/workflows/system_parents_child_tracking_iot_deploy.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  deploy-system:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Deploy System to gh-pages
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config --global user.name "GitHub Actions Bot"
+          git config --global user.email "actions@github.com"
+
+          # Pasta de origem dos arquivos do sistema no seu repositório
+          SRC_DIR="Automation/family-trackings/system"
+          
+          # Se a pasta do sistema ainda não existir, cria um index.html padrão de segurança
+          mkdir -p "$SRC_DIR"
+          if [ ! -f "$SRC_DIR/index.html" ]; then
+            echo "<h1 style='font-family:Arial;'>Sistema IoT - Family Trackings (Operacional)</h1>" > "$SRC_DIR/index.html"
+          fi
+
+          TEMP_DIR=$(mktemp -d)
+          cp -r "$SRC_DIR"/* "$TEMP_DIR/"
+
+          # Puxa a branch gh-pages de destino
+          git fetch origin gh-pages || true
+          git checkout gh-pages || git checkout --orphan gh-pages
+
+          # Atualiza APENAS a subpasta do system, sem afetar as outras
+          mkdir -p family-trackings/system
+          rm -rf family-trackings/system/*
+          cp -r "$TEMP_DIR"/* family-trackings/system/
+
+          git add .
+          git commit -m "Deploy independente: Atualizando system do family-trackings [skip ci]" || echo "Nenhuma alteração"
+          git push origin gh-pages
