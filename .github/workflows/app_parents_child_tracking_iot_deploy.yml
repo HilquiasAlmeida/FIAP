@@ -45,7 +45,8 @@ jobs:
           python -m pip install -r "$REQ_FILE"
           
           cd "$APP_DIR"
-          flet build web --yes --base-url /FIAP/family-trackings/app-mobile/
+          # Compila usando hash routing para garantir compatibilidade total com GitHub Pages
+          flet build web --yes --base-url /FIAP/family-trackings/app-mobile/ --route-url-strategy hash
 
           BUILD_SRC="build/web"
           if [ ! -d "$BUILD_SRC" ]; then
@@ -55,12 +56,6 @@ jobs:
           if [ ! -d "$BUILD_SRC" ]; then
             echo "Erro crítico: A pasta build/web não foi localizada!"
             exit 1
-          fi
-
-          # Truque essencial para o GitHub Pages não dar erro em rotas do Flet
-          if [ -f "$BUILD_SRC/index.html" ]; then
-            cp "$BUILD_SRC/index.html" "$BUILD_SRC/404.html"
-            echo "Arquivo 404.html gerado com sucesso para suporte a rotas SPA."
           fi
 
           mkdir -p "$WORKSPACE_DIR/dist_mobile"
@@ -122,6 +117,6 @@ jobs:
             echo "Nenhuma alteração detectada no código do app mobile (branch já atualizada)."
           fi
 
-          # Adiciona o link de acesso diretamente na página de resumo do GitHub Actions
+          # Link visível diretamente no Summary do GitHub Actions
           echo "### 📱 APP MOBILE PUBLICADO COM SUCESSO!" >> $GITHUB_STEP_SUMMARY
           echo "🔗 [Acessar App Mobile Online](https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/family-trackings/app-mobile/)" >> $GITHUB_STEP_SUMMARY
