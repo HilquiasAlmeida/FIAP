@@ -204,7 +204,7 @@ def main(page: ft.Page):
                 icon=ft.Icons.REFRESH, 
                 on_click=refresh_data, 
                 bgcolor=ft.Colors.INDIGO, 
-                color=ft.Colors.WHITE, 
+                foreground_color=ft.Colors.WHITE, # <-- Corrigido para foreground_color
                 tooltip="Atualizar Posição"
             )
         )
