@@ -1,4 +1,4 @@
-name: Deploy Flutter Web to GitHub Pages
+name: Deploy Flet Web to GitHub Pages
 
 on:
   push:
@@ -19,30 +19,30 @@ concurrency:
 
 jobs:
   build:
-    name: Build Flutter Web
+    name: Build Flet Web
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Flutter
-        uses: subosito/flutter-action@v2
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
-          channel: 'stable'
-          cache: true
+          python-version: '3.10'
+          cache: 'pip'
 
-      - name: Install dependencies & Build Web
+      - name: Install dependencies & Build Flet Web
         run: |
           cd Computer-Engineering/Projects/Python/Automation/parents-child-tracking-iot/app
-          flutter clean
-          flutter pub get
-          flutter build web --release --target lib/app_frontend_main.dart --base-href "/FIAP/"
+          pip install --upgrade pip
+          pip install -r requirements.txt
+          flet build web --base-href "/FIAP/"
 
       - name: Upload artifact for GitHub Pages
         uses: actions/upload-pages-artifact@v3
         with:
           path: 'Computer-Engineering/Projects/Python/Automation/parents-child-tracking-iot/app/build/web'
-          name: parents-app-artifact
+          name: flet-app-artifact
 
   deploy:
     environment:
@@ -55,4 +55,4 @@ jobs:
         id: deployment
         uses: actions/deploy-pages@v4
         with:
-          artifact_name: parents-app-artifact
+          artifact_name: flet-app-artifact
