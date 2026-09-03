@@ -4,7 +4,7 @@ on:
   push:
     branches: [ main, master ]
     paths:
-      - '/FIAP/Computer-Engineering/Projects/Python/Automation/family-trackings/parents-child-tracking-iot/app/**'
+      - 'FIAP/Computer-Engineering/Projects/Python/Automation/family-trackings/parents-child-tracking-iot/app/**'
 
   workflow_dispatch:
 
@@ -33,7 +33,7 @@ jobs:
 
       - name: Install dependencies & Build Flet Web
         run: |
-          cd /FIAP/Computer-Engineering/Projects/Python/Automation/family-trackings/parents-child-tracking-iot/app
+          cd FIAP/Computer-Engineering/Projects/Python/Automation/family-trackings/parents-child-tracking-iot/app/
           pip install --upgrade pip
           pip install -r requirements.txt
           flet build web --yes --base-url /FIAP/
@@ -41,7 +41,7 @@ jobs:
       - name: Upload artifact for GitHub Pages
         uses: actions/upload-pages-artifact@v3
         with:
-          path: '/FIAP/Computer-Engineering/Projects/Python/Automation/family-trackings/parents-child-tracking-iot/app/build/web'
+          path: 'FIAP/Computer-Engineering/Projects/Python/Automation/family-trackings/parents-child-tracking-iot/app/build/web'
           name: github-pages
 
   deploy:
