@@ -18,34 +18,41 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Deploy Website to gh-pages
+      - name: Deploy Website to gh-pages (Isolated)
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git config --global user.name "GitHub Actions Bot"
           git config --global user.email "actions@github.com"
 
-          # Pasta de origem dos arquivos do site no seu repositório
+          # Garante que a pasta de origem existe e tem um index.html básico
           SRC_DIR="Automation/family-trackings/website"
-          
-          # Se a pasta do site ainda não existir, cria um index.html padrão de segurança
           mkdir -p "$SRC_DIR"
           if [ ! -f "$SRC_DIR/index.html" ]; then
-            echo "<h1 style='font-family:Arial;'>Website - Family Trackings (Em construção)</h1>" > "$SRC_DIR/index.html"
+            echo "<h1 style='font-family:Arial;'>Website - Family Trackings</h1>" > "$SRC_DIR/index.html"
           fi
 
-          TEMP_DIR=$(mktemp -d)
-          cp -r "$SRC_DIR"/* "$TEMP_DIR/"
+          # Clona apenas a branch gh-pages para uma pasta temporária (ou cria se não existir)
+          git clone --branch gh-pages --single-branch https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git gh_pages_branch || \
+          ( mkdir gh_pages_branch && cd gh_pages_branch && git init && git checkout -b gh-pages && cd .. )
 
-          # Puxa a branch gh-pages de destino
-          git fetch origin gh-pages || true
-          git checkout gh-pages || git checkout --orphan gh-pages
+          cd gh_pages_branch
+          git remote remove origin || true
+          git remote add origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
+          git checkout gh-pages || git checkout -b gh-pages
 
-          # Atualiza APENAS a subpasta do website, mantendo o app-mobile e o system intactos
+          # Prepara a subpasta específica do website sem afetar as outras
           mkdir -p family-trackings/website
           rm -rf family-trackings/website/*
-          cp -r "$TEMP_DIR"/* family-trackings/website/
 
+          # Copia os arquivos novos do site
+          cp -r ../$SRC_DIR/* family-trackings/website/
+
+          # Verifica se houve mudanças e faz o commit/push isolado
           git add .
-          git commit -m "Deploy independente: Atualizando website do family-trackings [skip ci]" || echo "Nenhuma alteração"
-          git push origin gh-pages
+          if git status --porcelain | grep -q .; then
+            git commit -m "Deploy independente: Atualizando website do family-trackings [skip ci]"
+            git push origin gh-pages
+          else
+            echo "Nenhuma alteração detectada para o website."
+          fi
