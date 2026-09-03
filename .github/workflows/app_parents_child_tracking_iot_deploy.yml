@@ -45,7 +45,7 @@ jobs:
           python -m pip install -r "$REQ_FILE"
           
           cd "$APP_DIR"
-          # Compila usando hash routing para garantir compatibilidade total com GitHub Pages
+          # Compilação limpa com base-url correta e hash routing para evitar tela em branco
           flet build web --yes --base-url /FIAP/family-trackings/app-mobile/ --route-url-strategy hash
 
           BUILD_SRC="build/web"
@@ -56,6 +56,11 @@ jobs:
           if [ ! -d "$BUILD_SRC" ]; then
             echo "Erro crítico: A pasta build/web não foi localizada!"
             exit 1
+          fi
+
+          # Cria o fallback 404.html para o GitHub Pages não quebrar rotas do Flet
+          if [ -f "$BUILD_SRC/index.html" ]; then
+            cp "$BUILD_SRC/index.html" "$BUILD_SRC/404.html"
           fi
 
           mkdir -p "$WORKSPACE_DIR/dist_mobile"
@@ -112,11 +117,10 @@ jobs:
           if git status --porcelain | grep -q .; then
             git commit -m "Deploy independente: Atualizando app-mobile [skip ci]"
             git push origin gh-pages
-            echo "Alterações enviadas com sucesso para o GitHub Pages."
           else
-            echo "Nenhuma alteração detectada no código do app mobile (branch já atualizada)."
+            echo "Nenhuma alteração detectada no código do app mobile."
           fi
 
-          # Link visível diretamente no Summary do GitHub Actions
+          # Link gerado em HTML puro com target="_blank" para abrir em NOVA ABA diretamente no Summary
           echo "### 📱 APP MOBILE PUBLICADO COM SUCESSO!" >> $GITHUB_STEP_SUMMARY
-          echo "🔗 [Acessar App Mobile Online](https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/family-trackings/app-mobile/)" >> $GITHUB_STEP_SUMMARY
+          echo "<p><a href=\"https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/family-trackings/app-mobile/\" target=\"_blank\" style=\"font-size: 16px; font-weight: bold;\">🔗 Clique aqui para abrir o App Mobile em uma nova aba ↗</a></p>" >> $GITHUB_STEP_SUMMARY
