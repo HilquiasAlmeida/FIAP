@@ -39,7 +39,7 @@ jobs:
           requests>=2.31.0
           EOF
 
-          # Cria o main.py
+          # Cria o main.py corrigido
           cat << 'EOF' > "$TARGET_DIR/main.py"
           import flet as ft
 
@@ -135,11 +135,10 @@ jobs:
                           expand=True,
                       ),
                       ft.FloatingActionButton(
-                          content=ft.Row([
-                              ft.Icon(ft.Icons.ADD, color=ft.Colors.WHITE),
-                              ft.Text("Vincular Novo Dispositivo", color=ft.Colors.WHITE)
-                          ], tight=True),
+                          text="Vincular Novo Dispositivo",
+                          icon=ft.Icons.ADD,
                           bgcolor=ft.Colors.INDIGO,
+                          color=ft.Colors.WHITE,
                           on_click=go_to_add
                       )
                   )
@@ -238,13 +237,11 @@ jobs:
                           expand=True
                       ),
                       ft.FloatingActionButton(
-                          content=ft.Row([
-                              ft.Icon(ft.Icons.REFRESH, color=ft.Colors.WHITE),
-                              ft.Text("Atualizar", color=ft.Colors.WHITE)
-                          ], tight=True),
+                          text="Atualizar",
+                          icon=ft.Icons.REFRESH,
                           bgcolor=ft.Colors.INDIGO,
-                          on_click=refresh_data,
-                          tooltip="Atualizar Posição"
+                          color=ft.Colors.WHITE,
+                          on_click=refresh_data
                       )
                   )
                   page.update()
