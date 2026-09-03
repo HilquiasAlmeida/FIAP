@@ -158,9 +158,7 @@ def main(page: ft.Page):
             time_text.value = f"Última Att: {new_data['timestamp']}"
             page.update()
 
-        def open_map(evt):
-            url = f"https://www.google.com/maps/search/?api=1&query={data['latitude']},{data['longitude']}"
-            page.launch_url(url)
+        maps_url = f"https://www.google.com/maps/search/?api=1&query={data['latitude']},{data['longitude']}"
 
         page.clean()
         page.add(
@@ -186,7 +184,7 @@ def main(page: ft.Page):
                                 ft.ElevatedButton(
                                     "Abrir no Google Maps", 
                                     icon=ft.Icons.MAP, 
-                                    on_click=open_map, 
+                                    url=maps_url,  # Propriedade nativa do Flet para abrir links na Web
                                     bgcolor=ft.Colors.INDIGO, 
                                     color=ft.Colors.WHITE, 
                                     width=float("inf")
@@ -204,7 +202,7 @@ def main(page: ft.Page):
                 icon=ft.Icons.REFRESH, 
                 on_click=refresh_data, 
                 bgcolor=ft.Colors.INDIGO, 
-                foreground_color=ft.Colors.WHITE, # <-- Corrigido para foreground_color
+                foreground_color=ft.Colors.WHITE,
                 tooltip="Atualizar Posição"
             )
         )
