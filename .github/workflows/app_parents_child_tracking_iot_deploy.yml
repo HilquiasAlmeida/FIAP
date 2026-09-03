@@ -33,7 +33,7 @@ jobs:
 
       - name: Install dependencies & Build Flet Web
         run: |
-          cd Computer-Engineering/Projects/Python/Automation/family-trackings/parents-child-tracking-iot/app/
+          cd Computer-Engineering/Projects/Python/Automation/family-trackings/parents-child-tracking-iot/app
           pip install --upgrade pip
           pip install -r requirements.txt
           flet build web --yes --base-url /FIAP/
