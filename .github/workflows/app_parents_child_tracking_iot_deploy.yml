@@ -43,7 +43,7 @@ jobs:
         uses: actions/upload-pages-artifact@v3
         with:
           path: 'Computer-Engineering/Projects/Python/Automation/parents-child-tracking-iot/app/build/web'
-          name: flet-app-artifact
+          name: github-pages
 
   deploy:
     environment:
@@ -55,5 +55,3 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
-        with:
-          artifact_name: flet-app-artifact
