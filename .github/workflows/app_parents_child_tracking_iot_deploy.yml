@@ -4,7 +4,6 @@ on:
   push:
     branches: [ main, master ]
     paths:
-      # Caminho exato onde está o seu app mobile no repositório
       - 'Computer-Engineering/Projects/Python/Automation/family-trackings/parents-child-tracking-iot/app/**'
       - '.github/workflows/app_parents_child_tracking_iot_deploy.yml'
   workflow_dispatch:
@@ -27,14 +26,12 @@ jobs:
 
       - name: Build Flet Web App
         run: |
-          # Aponta para a pasta real do seu projeto Flet
           APP_DIR="Computer-Engineering/Projects/Python/Automation/family-trackings/parents-child-tracking-iot/app"
           
-          pip install --upgrade pip
-          pip install -r "$APP_DIR/requirements.txt"
-          cd "$APP_DIR"
+          python -m pip install --upgrade pip
+          python -m pip install -r "$APP_DIR/requirements.txt"
           
-          # Compila o Flet direcionando para a rota web correta
+          cd "$APP_DIR"
           flet build web --yes --base-url /FIAP/family-trackings/app-mobile/
 
       - name: Push to gh-pages branch (Isolated)
@@ -46,7 +43,6 @@ jobs:
 
           SRC_BUILD="Computer-Engineering/Projects/Python/Automation/family-trackings/parents-child-tracking-iot/app/build/web"
 
-          # Clona a branch gh-pages de forma isolada
           git clone --branch gh-pages --single-branch https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git gh_pages_branch || \
           ( mkdir gh_pages_branch && cd gh_pages_branch && git init && git checkout -b gh-pages && cd .. )
 
@@ -55,7 +51,6 @@ jobs:
           git remote add origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
           git checkout gh-pages || git checkout -b gh-pages
 
-          # Atualiza apenas a subpasta do app mobile no Pages
           mkdir -p family-trackings/app-mobile
           rm -rf family-trackings/app-mobile/*
           cp -r ../$SRC_BUILD/* family-trackings/app-mobile/
