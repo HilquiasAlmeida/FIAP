@@ -10,8 +10,58 @@ def main(page: ft.Page):
     def route_change(route):
         page.views.clear()
         
-        # Tela Principal / Dashboard
-        if page.route == "/" or page.route == "/dashboard":
+        # 1. Tela de Login (Página Inicial)
+        if page.route == "/" or page.route == "/login":
+            user_field = ft.TextField(label="E-mail ou Usuário", width=300, border_radius=8, prefix_icon=ft.Icons.EMAIL)
+            pass_field = ft.TextField(label="Senha", password=True, can_reveal_password=True, width=300, border_radius=8, prefix_icon=ft.Icons.LOCK)
+            error_text = ft.Text("", color=ft.Colors.RED)
+
+            def do_login(e):
+                if not user_field.value or not pass_field.value:
+                    error_text.value = "Por favor, preencha o e-mail e a senha!"
+                    page.update()
+                else:
+                    # Login bem-sucedido, vai para o dashboard
+                    page.push_route("/dashboard")
+
+            page.views.append(
+                ft.View(
+                    "/login",
+                    [
+                        ft.Container(
+                            content=ft.Column(
+                                [
+                                    ft.Icon(ft.Icons.SECURITY, size=64, color=ft.Colors.INDIGO),
+                                    ft.Text("Family Trackings IoT", size=24, weight=ft.FontWeight.BOLD, color=ft.Colors.INDIGO_900),
+                                    ft.Text("Faça login para monitorar seus dependentes", size=14, color=ft.Colors.GREY_700),
+                                    ft.VerticalDivider(height=10),
+                                    user_field,
+                                    pass_field,
+                                    ft.ElevatedButton(
+                                        text="Entrar",
+                                        icon=ft.Icons.LOGIN,
+                                        bgcolor=ft.Colors.INDIGO,
+                                        color=ft.Colors.WHITE,
+                                        width=300,
+                                        on_click=do_login
+                                    ),
+                                    error_text,
+                                ],
+                                alignment=ft.MainAxisAlignment.CENTER,
+                                horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+                                spacing=15,
+                            ),
+                            alignment=ft.alignment.center,
+                            expand=True,
+                            padding=20
+                        )
+                    ],
+                    bgcolor=ft.Colors.GREY_50
+                )
+            )
+
+        # 2. Tela Principal / Dashboard
+        elif page.route == "/dashboard":
             page.views.append(
                 ft.View(
                     "/dashboard",
@@ -20,6 +70,9 @@ def main(page: ft.Page):
                             title=ft.Text("Family Trackings - Monitoramento", color=ft.Colors.WHITE, weight=ft.FontWeight.BOLD),
                             bgcolor=ft.Colors.INDIGO,
                             center_title=True,
+                            actions=[
+                                ft.IconButton(ft.Icons.LOGOUT, tooltip="Sair", icon_color=ft.Colors.WHITE, on_click=lambda _: page.push_route("/login"))
+                            ]
                         ),
                         ft.Container(
                             content=ft.Column(
@@ -34,7 +87,7 @@ def main(page: ft.Page):
                                                     subtitle=ft.Text("Status: Online • Localização: Escola • Bateria: 85%"),
                                                 ),
                                                 ft.Row([
-                                                    ft.TextButton("Ver no Mapa", on_click=lambda _: page.go("/tracking")),
+                                                    ft.TextButton("Ver no Mapa", on_click=lambda _: page.push_route("/tracking")),
                                                 ], alignment=ft.MainAxisAlignment.END)
                                             ]),
                                             padding=10
@@ -49,7 +102,7 @@ def main(page: ft.Page):
                                                     subtitle=ft.Text("Status: Online • Localização: Parque • Bateria: 62%"),
                                                 ),
                                                 ft.Row([
-                                                    ft.TextButton("Ver no Mapa", on_click=lambda _: page.go("/tracking")),
+                                                    ft.TextButton("Ver no Mapa", on_click=lambda _: page.push_route("/tracking")),
                                                 ], alignment=ft.MainAxisAlignment.END)
                                             ]),
                                             padding=10
@@ -68,12 +121,12 @@ def main(page: ft.Page):
                         icon=ft.Icons.ADD,
                         bgcolor=ft.Colors.INDIGO,
                         color=ft.Colors.WHITE,
-                        on_click=lambda _: page.go("/add-device")
+                        on_click=lambda _: page.push_route("/add-device")
                     ),
                 )
             )
 
-        # Tela de Adicionar Dispositivo
+        # 3. Tela de Adicionar Dispositivo
         elif page.route == "/add-device":
             device_code = ft.TextField(label="Código do Dispositivo (IMEI / UUID)", border_radius=8)
             device_name = ft.TextField(label="Nome do Dependente / Aparelho", border_radius=8)
@@ -95,7 +148,7 @@ def main(page: ft.Page):
                         ft.AppBar(
                             title=ft.Text("Vincular Novo Dispositivo", color=ft.Colors.WHITE),
                             bgcolor=ft.Colors.INDIGO,
-                            leading=ft.IconButton(ft.Icons.ARROW_BACK, on_click=lambda _: page.go("/dashboard"), icon_color=ft.Colors.WHITE),
+                            leading=ft.IconButton(ft.Icons.ARROW_BACK, on_click=lambda _: page.push_route("/dashboard"), icon_color=ft.Colors.WHITE),
                         ),
                         ft.Container(
                             content=ft.Column(
@@ -123,7 +176,7 @@ def main(page: ft.Page):
                 )
             )
 
-        # Tela de Rastreamento / Mapa Fictício
+        # 4. Tela de Rastreamento
         elif page.route == "/tracking":
             page.views.append(
                 ft.View(
@@ -132,7 +185,7 @@ def main(page: ft.Page):
                         ft.AppBar(
                             title=ft.Text("Rastreamento em Tempo Real", color=ft.Colors.WHITE),
                             bgcolor=ft.Colors.INDIGO,
-                            leading=ft.IconButton(ft.Icons.ARROW_BACK, on_click=lambda _: page.go("/dashboard"), icon_color=ft.Colors.WHITE),
+                            leading=ft.IconButton(ft.Icons.ARROW_BACK, on_click=lambda _: page.push_route("/dashboard"), icon_color=ft.Colors.WHITE),
                         ),
                         ft.Container(
                             content=ft.Column(
@@ -172,11 +225,11 @@ def main(page: ft.Page):
     def view_pop(view):
         page.views.pop()
         top_view = page.views[-1]
-        page.go(top_view.route)
+        page.push_route(top_view.route)
 
     page.on_route_change = route_change
     page.on_view_pop = view_pop
-    page.go(page.route)
+    page.push_route(page.route)
 
 if __name__ == "__main__":
-    ft.app(target=main, view=ft.AppView.WEB_BROWSER)
+    ft.run(target=main)
