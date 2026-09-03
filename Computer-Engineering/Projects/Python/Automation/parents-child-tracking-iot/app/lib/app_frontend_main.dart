@@ -196,7 +196,7 @@ class _AddDeviceScreenState extends State<AddDeviceScreen> {
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: () {
-                  ScaffoldMessenger.of(context).showSnackBar(constSnackBar(content: Text('Dispositivo vinculado com sucesso!')));
+                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Dispositivo vinculado com sucesso!')));
                   Navigator.pop(context);
                 },
                 style: ElevatedButton.styleFrom(backgroundColor: Colors.indigo, foregroundColor: Colors.white, padding: const EdgeInsets.symmetric(vertical: 14)),
@@ -213,7 +213,7 @@ class _AddDeviceScreenState extends State<AddDeviceScreen> {
 // ================= TELA DE RASTREAMENTO =================
 class TrackingScreen extends StatefulWidget {
   final String deviceId;
-  const TrackingScreen({super.key, required.this.deviceId});
+  const TrackingScreen({super.key, required this.deviceId});
 
   @override
   State<TrackingScreen> createState() => _TrackingScreenState();
