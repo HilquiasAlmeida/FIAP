@@ -24,13 +24,19 @@ jobs:
           python-version: '3.10'
           cache: 'pip'
 
-      - name: Build Flet Web App
+      - name: Build and Deploy App Mobile (Unified Step)
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          REQ_FILE=$(find . -path "*/parents-child-tracking-iot/*/requirements.txt" | head -n 1)
-          if [ -z "$REQ_FILE" ]; then
-            REQ_FILE=$(find . -name "requirements.txt" | grep "app" | head -n 1)
+          WORKSPACE_DIR="$GITHUB_WORKSPACE"
+          
+          # Localiza o requirements.txt com precisão
+          REQ_FILE="$WORKSPACE_DIR/Computer-Engineering/Projects/Python/Automation/family-trackings/parents-child-tracking-iot/app/requirements.txt"
+          if [ ! -f "$REQ_FILE" ]; then
+            REQ_FILE=$(find "$WORKSPACE_DIR" -name "requirements.txt" | grep "app" | head -n 1)
           fi
-          if [ -z "$REQ_FILE" ]; then
+          
+          if [ -z "$REQ_FILE" ] || [ ! -f "$REQ_FILE" ]; then
             echo "Erro: requirements.txt não encontrado!"
             exit 1
           fi
@@ -38,54 +44,52 @@ jobs:
           APP_DIR=$(dirname "$REQ_FILE")
           echo "Pasta do app encontrada em: $APP_DIR"
 
+          # Instala dependências
           python -m pip install --upgrade pip
           python -m pip install -r "$REQ_FILE"
           
+          # Compila o app Flet para Web (WASM)
           cd "$APP_DIR"
           flet build web --yes --base-url /FIAP/family-trackings/app-mobile/
 
-      - name: Push to gh-pages branch (Isolated)
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          # Define caminhos absolutos baseados no workspace do GitHub
-          WORKSPACE_DIR="$GITHUB_WORKSPACE"
-          BUILD_DIR="$WORKSPACE_DIR/Computer-Engineering/Projects/Python/Automation/family-trackings/parents-child-tracking-iot/app/build/web"
-
+          # Confirma o local exato da build gerada
+          BUILD_DIR="$APP_DIR/build/web"
           if [ ! -d "$BUILD_DIR" ]; then
-            BUILD_DIR=$(find "$WORKSPACE_DIR" -type d -path "*/parents-child-tracking-iot/app/build/web" | head -n 1)
+            BUILD_DIR=$(find "$APP_DIR" -type d -name "web" | grep "build" | head -n 1)
           fi
 
-          echo "Caminho absoluto da build: $BUILD_DIR"
+          if [ ! -d "$BUILD_DIR" ]; then
+            echo "Erro crítico: A pasta build/web não foi localizada após o build!"
+            exit 1
+          fi
 
+          echo "Caminho da build confirmado: $BUILD_DIR"
+
+          # Configura o Git e realiza o deploy isolado para o gh-pages
           git config --global user.name "GitHub Actions Bot"
           git config --global user.email "actions@github.com"
 
-          # Prepara diretório isolado fora do caminho de compilação
           cd "$WORKSPACE_DIR"
-          mkdir -p temp_gh_pages
-          cd temp_gh_pages
+          mkdir -p temp_gh_pages_app
+          cd temp_gh_pages_app
 
           git clone --branch gh-pages --single-branch https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git . || \
           ( git init && git checkout -b gh-pages && git remote add origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git )
 
           git checkout gh-pages || git checkout -b gh-pages
 
-          # Copia os arquivos usando o caminho absoluto correto
           mkdir -p family-trackings/app-mobile
           rm -rf family-trackings/app-mobile/*
-
-          if [ -d "$BUILD_DIR" ]; then
-            cp -r "$BUILD_DIR"/* family-trackings/app-mobile/
-          else
-            echo "Erro crítico: A pasta build/web não foi localizada!"
-            exit 1
-          fi
+          cp -r "$BUILD_DIR"/* family-trackings/app-mobile/
 
           git add .
           if git status --porcelain | grep -q .; then
             git commit -m "Deploy independente: Atualizando app-mobile [skip ci]"
             git push origin gh-pages
+            echo "===================================================="
+            echo "📱 APP MOBILE PUBLICADO COM SUCESSO!"
+            echo "🔗 Link: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/family-trackings/app-mobile/"
+            echo "===================================================="
           else
             echo "Nenhuma alteração detectada para o app mobile."
           fi
