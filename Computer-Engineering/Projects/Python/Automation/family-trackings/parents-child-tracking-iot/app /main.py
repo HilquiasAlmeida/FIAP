@@ -1,217 +1,183 @@
 import flet as ft
 
 def main(page: ft.Page):
-    page.title = "SafeChild IoT - Pais"
-    page.theme_mode = ft.ThemeMode.LIGHT
+    page.title = "Family Trackings IoT - Painel Pais & Filhos"
     page.vertical_alignment = ft.MainAxisAlignment.CENTER
     page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
-    page.bgcolor = ft.Colors.INDIGO_50
+    page.theme_mode = ft.ThemeMode.LIGHT
+    page.padding = 0
 
-    def fetch_location():
-        return {
-            "device_id": "esp32_crianca_01",
-            "latitude": -23.550520,
-            "longitude": -46.633308,
-            "timestamp": "Online agora",
-            "status": "Ativo"
-        }
-
-    # ================= TELA DE LOGIN =================
-    def show_login(e=None):
-        email_ctrl = ft.TextField(label="E-mail do Responsável", border=ft.InputBorder.OUTLINE, width=300)
-        pass_ctrl = ft.TextField(label="Senha", password=True, can_reveal_password=True, border=ft.InputBorder.OUTLINE, width=300)
+    def route_change(route):
+        page.views.clear()
         
-        def handle_login(evt):
-            if email_ctrl.value and pass_ctrl.value:
-                show_dashboard()
-            else:
-                page.snack_bar = ft.SnackBar(ft.Text("Por favor, preencha e-mail e senha."))
-                page.snack_bar.open = True
+        # Tela Principal / Dashboard
+        if page.route == "/" or page.route == "/dashboard":
+            page.views.append(
+                ft.View(
+                    "/dashboard",
+                    [
+                        ft.AppBar(
+                            title=ft.Text("Family Trackings - Monitoramento", color=ft.Colors.WHITE, weight=ft.FontWeight.BOLD),
+                            bgcolor=ft.Colors.INDIGO,
+                            center_title=True,
+                        ),
+                        ft.Container(
+                            content=ft.Column(
+                                [
+                                    ft.Text("Dispositivos Conectados", size=20, weight=ft.FontWeight.BOLD, color=ft.Colors.INDIGO_900),
+                                    ft.Card(
+                                        content=ft.Container(
+                                            content=ft.Column([
+                                                ft.ListTile(
+                                                    leading=ft.Icon(ft.Icons.PHONE_ANDROID, color=ft.Colors.INDIGO),
+                                                    title=ft.Text("Smartphone - Filho (João)", weight=ft.FontWeight.BOLD),
+                                                    subtitle=ft.Text("Status: Online • Localização: Escola • Bateria: 85%"),
+                                                ),
+                                                ft.Row([
+                                                    ft.TextButton("Ver no Mapa", on_click=lambda _: page.go("/tracking")),
+                                                ], alignment=ft.MainAxisAlignment.END)
+                                            ]),
+                                            padding=10
+                                        )
+                                    ),
+                                    ft.Card(
+                                        content=ft.Container(
+                                            content=ft.Column([
+                                                ft.ListTile(
+                                                    leading=ft.Icon(ft.Icons.WATCH, color=ft.Colors.INDIGO),
+                                                    title=ft.Text("Smartwatch - Filha (Maria)", weight=ft.FontWeight.BOLD),
+                                                    subtitle=ft.Text("Status: Online • Localização: Parque • Bateria: 62%"),
+                                                ),
+                                                ft.Row([
+                                                    ft.TextButton("Ver no Mapa", on_click=lambda _: page.go("/tracking")),
+                                                ], alignment=ft.MainAxisAlignment.END)
+                                            ]),
+                                            padding=10
+                                        )
+                                    ),
+                                ],
+                                spacing=15,
+                                scroll=ft.ScrollMode.AUTO,
+                            ),
+                            padding=20,
+                            expand=True,
+                        )
+                    ],
+                    # Botão corrigido nativamente para exibir o texto completo sem cortes
+                    floating_action_button=ft.FloatingActionButton(
+                        text="Vincular Novo Dispositivo",
+                        icon=ft.Icons.ADD,
+                        bgcolor=ft.Colors.INDIGO,
+                        color=ft.Colors.WHITE,
+                        on_click=lambda _: page.go("/add-device")
+                    ),
+                )
+            )
+
+        # Tela de Adicionar Dispositivo
+        elif page.route == "/add-device":
+            device_code = ft.TextField(label="Código do Dispositivo (IMEI / UUID)", border_radius=8)
+            device_name = ft.TextField(label="Nome do Dependente / Aparelho", border_radius=8)
+            status_text = ft.Text("", color=ft.Colors.GREEN)
+
+            def save_device(e):
+                if not device_code.value or not device_name.value:
+                    status_text.value = "Por favor, preencha todos os campos!"
+                    status_text.color = ft.Colors.RED
+                else:
+                    status_text.value = "Dispositivo vinculado com sucesso!"
+                    status_text.color = ft.Colors.GREEN
                 page.update()
 
-        page.clean()
-        page.add(
-            ft.Card(
-                content=ft.Container(
-                    content=ft.Column([
-                        ft.Icon(ft.Icons.SECURITY, size=64, color=ft.Colors.INDIGO),
-                        ft.Text("SafeChild IoT", size=24, weight="bold", color=ft.Colors.INDIGO),
-                        ft.Text("Área de Monitoramento dos Pais", color=ft.Colors.GREY_700),
-                        ft.Divider(height=20, color=ft.Colors.TRANSPARENT),
-                        email_ctrl,
-                        pass_ctrl,
-                        ft.Divider(height=10, color=ft.Colors.TRANSPARENT),
-                        ft.ElevatedButton(
-                            "Entrar", 
-                            on_click=handle_login, 
-                            bgcolor=ft.Colors.INDIGO, 
-                            color=ft.Colors.WHITE, 
-                            width=300
+            page.views.append(
+                ft.View(
+                    "/add-device",
+                    [
+                        ft.AppBar(
+                            title=ft.Text("Vincular Novo Dispositivo", color=ft.Colors.WHITE),
+                            bgcolor=ft.Colors.INDIGO,
+                            leading=ft.IconButton(ft.Icons.ARROW_BACK, on_click=lambda _: page.go("/dashboard"), icon_color=ft.Colors.WHITE),
+                        ),
+                        ft.Container(
+                            content=ft.Column(
+                                [
+                                    ft.Text("Cadastre um novo rastreador IoT", size=18, weight=ft.FontWeight.BOLD),
+                                    device_name,
+                                    device_code,
+                                    ft.ElevatedButton(
+                                        text="Salvar e Vincular",
+                                        icon=ft.Icons.CHECK,
+                                        bgcolor=ft.Colors.INDIGO,
+                                        color=ft.Colors.WHITE,
+                                        on_click=save_device,
+                                        width=250
+                                    ),
+                                    status_text,
+                                ],
+                                spacing=20,
+                                alignment=ft.MainAxisAlignment.START,
+                            ),
+                            padding=20,
+                            expand=True,
                         )
-                    ], horizontal_alignment=ft.CrossAxisAlignment.CENTER, spacing=15),
-                    padding=30,
-                ),
-                elevation=6,
+                    ]
+                )
             )
-        )
-        page.update()
 
-    # ================= DASHBOARD =================
-    def show_dashboard():
-        def go_to_tracking(evt):
-            show_tracking()
-
-        def go_to_add(evt):
-            show_add_device()
-
-        page.clean()
-        page.add(
-            ft.AppBar(
-                title=ft.Text("Meus Filhos Monitorados"),
-                bgcolor=ft.Colors.INDIGO,
-                color=ft.Colors.WHITE,
-                actions=[
-                    ft.IconButton(ft.Icons.LOGOUT, on_click=show_login, icon_color=ft.Colors.WHITE)
-                ]
-            ),
-            ft.Container(
-                content=ft.Column([
-                    ft.Text("Dispositivos Conectados", size=18, weight="bold", color=ft.Colors.BLACK87),
-                    ft.Divider(height=10, color=ft.Colors.TRANSPARENT),
-                    ft.Card(
-                        content=ft.ListTile(
-                            leading=ft.CircleAvatar(content=ft.Icon(ft.Icons.CHILD_CARE, color=ft.Colors.WHITE), bgcolor=ft.Colors.INDIGO),
-                            title=ft.Text("Lucas Almeida", weight="bold"),
-                            subtitle=ft.Text("ID: esp32_crianca_01\nStatus: Ativo"),
-                            is_three_line=True,
-                            trailing=ft.Icon(ft.Icons.ARROW_FORWARD_IOS, size=16),
-                            on_click=go_to_tracking,
+        # Tela de Rastreamento / Mapa Fictício
+        elif page.route == "/tracking":
+            page.views.append(
+                ft.View(
+                    "/tracking",
+                    [
+                        ft.AppBar(
+                            title=ft.Text("Rastreamento em Tempo Real", color=ft.Colors.WHITE),
+                            bgcolor=ft.Colors.INDIGO,
+                            leading=ft.IconButton(ft.Icons.ARROW_BACK, on_click=lambda _: page.go("/dashboard"), icon_color=ft.Colors.WHITE),
                         ),
-                        elevation=3,
-                    ),
-                ]),
-                padding=20,
-                expand=True,
-            ),
-            ft.FloatingActionButton(
-                content=ft.Row([
-                    ft.Icon(ft.Icons.ADD, color=ft.Colors.WHITE),
-                    ft.Text("Vincular Novo Dispositivo", color=ft.Colors.WHITE)
-                ], tight=True),
-                bgcolor=ft.Colors.INDIGO,
-                on_click=go_to_add
-            )
-        )
-        page.update()
-
-    # ================= TELA DE CADASTRO =================
-    def show_add_device():
-        name_ctrl = ft.TextField(label="Nome da Criança", border=ft.InputBorder.OUTLINE)
-        id_ctrl = ft.TextField(label="ID do Hardware (ex: esp32_02)", border=ft.InputBorder.OUTLINE)
-
-        def save_device(evt):
-            page.snack_bar = ft.SnackBar(ft.Text("Dispositivo vinculado com sucesso!"))
-            page.snack_bar.open = True
-            page.update()
-            show_dashboard()
-
-        page.clean()
-        page.add(
-            ft.AppBar(
-                title=ft.Text("Vincular Dispositivo IoT"), 
-                bgcolor=ft.Colors.INDIGO, 
-                color=ft.Colors.WHITE,
-                leading=ft.IconButton(ft.Icons.ARROW_BACK, on_click=lambda _: show_dashboard(), icon_color=ft.Colors.WHITE)
-            ),
-            ft.Container(
-                content=ft.Column([
-                    name_ctrl,
-                    id_ctrl,
-                    ft.Divider(height=10, color=ft.Colors.TRANSPARENT),
-                    ft.ElevatedButton(
-                        "Salvar e Vincular", 
-                        on_click=save_device, 
-                        bgcolor=ft.Colors.INDIGO, 
-                        color=ft.Colors.WHITE, 
-                        width=float("inf")
+                        ft.Container(
+                            content=ft.Column(
+                                [
+                                    ft.Text("Coordenadas Atuais", size=18, weight=ft.FontWeight.BOLD),
+                                    ft.Card(
+                                        content=ft.Container(
+                                            content=ft.Column([
+                                                ft.ListTile(
+                                                    leading=ft.Icon(ft.Icons.LOCATION_ON, color=ft.Colors.RED),
+                                                    title=ft.Text("Latitude: -23.550520, Longitude: -46.633308"),
+                                                    subtitle=ft.Text("Última atualização: Há 2 minutos"),
+                                                )
+                                            ]),
+                                            padding=15
+                                        )
+                                    ),
+                                ],
+                                spacing=20
+                            ),
+                            padding=20,
+                            expand=True,
+                        )
+                    ],
+                    floating_action_button=ft.FloatingActionButton(
+                        text="Atualizar",
+                        icon=ft.Icons.REFRESH,
+                        bgcolor=ft.Colors.INDIGO,
+                        color=ft.Colors.WHITE,
+                        on_click=lambda _: page.update(),
+                        tooltip="Atualizar Posição"
                     )
-                ], spacing=15),
-                padding=20,
-                expand=True
+                )
             )
-        )
         page.update()
 
-    # ================= TELA DE RASTREAMENTO =================
-    def show_tracking():
-        data = fetch_location()
-        
-        lat_text = ft.Text(f"Latitude: {data['latitude']}")
-        lon_text = ft.Text(f"Longitude: {data['longitude']}")
-        time_text = ft.Text(f"Última Att: {data['timestamp']}")
-        status_chip = ft.Chip(label=ft.Text(data['status'], color=ft.Colors.WHITE), bgcolor=ft.Colors.GREEN)
+    def view_pop(view):
+        page.views.pop()
+        top_view = page.views[-1]
+        page.go(top_view.route)
 
-        def refresh_data(evt):
-            new_data = fetch_location()
-            lat_text.value = f"Latitude: {new_data['latitude']}"
-            lon_text.value = f"Longitude: {new_data['longitude']}"
-            time_text.value = f"Última Att: {new_data['timestamp']}"
-            page.update()
-
-        maps_url = f"https://www.google.com/maps/search/?api=1&query={data['latitude']},{data['longitude']}"
-
-        page.clean()
-        page.add(
-            ft.AppBar(
-                title=ft.Text(f"Rastreando: {data['device_id']}"), 
-                bgcolor=ft.Colors.INDIGO, 
-                color=ft.Colors.WHITE,
-                leading=ft.IconButton(ft.Icons.ARROW_BACK, on_click=lambda _: show_dashboard(), icon_color=ft.Colors.WHITE)
-            ),
-            ft.Container(
-                content=ft.Column([
-                    ft.Card(
-                        content=ft.Container(
-                            content=ft.Column([
-                                ft.Text("Localização em Tempo Real", size=20, weight="bold", color=ft.Colors.INDIGO),
-                                ft.Divider(color=ft.Colors.INDIGO_100),
-                                ft.Text(f"Dispositivo: {data['device_id']}"),
-                                lat_text,
-                                lon_text,
-                                time_text,
-                                ft.Row([ft.Text("Status: "), status_chip]),
-                                ft.Divider(height=10, color=ft.Colors.TRANSPARENT),
-                                ft.ElevatedButton(
-                                    "Abrir no Google Maps", 
-                                    icon=ft.Icons.MAP, 
-                                    url=maps_url, 
-                                    bgcolor=ft.Colors.INDIGO, 
-                                    color=ft.Colors.WHITE, 
-                                    width=float("inf")
-                                )
-                            ], spacing=10),
-                            padding=24,
-                        ),
-                        elevation=4
-                    )
-                ], alignment=ft.MainAxisAlignment.CENTER),
-                padding=40,
-                expand=True
-            ),
-            ft.FloatingActionButton(
-                content=ft.Row([
-                    ft.Icon(ft.Icons.REFRESH, color=ft.Colors.WHITE),
-                    ft.Text("Atualizar", color=ft.Colors.WHITE)
-                ], tight=True),
-                bgcolor=ft.Colors.INDIGO,
-                on_click=refresh_data,
-                tooltip="Atualizar Posição"
-            )
-        )
-        page.update()
-
-    show_login()
+    page.on_route_change = route_change
+    page.on_view_pop = view_pop
+    page.go(page.route)
 
 if __name__ == "__main__":
-    ft.app(target=main)
-
+    ft.app(target=main, view=ft.AppView.WEB_BROWSER)
