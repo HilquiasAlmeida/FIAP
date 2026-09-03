@@ -63,7 +63,6 @@ def main(page: ft.Page):
                             expand=True,
                         )
                     ],
-                    # Botão corrigido nativamente para exibir o texto completo sem cortes
                     floating_action_button=ft.FloatingActionButton(
                         text="Vincular Novo Dispositivo",
                         icon=ft.Icons.ADD,
