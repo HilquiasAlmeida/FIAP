@@ -4,7 +4,7 @@ on:
   push:
     branches: [ main, master ]
     paths:
-      - 'Computer-Engineering/Projects/Python/Automation/child-tracking-iot/parents-child-tracking-iot/app/**'
+      - 'Computer-Engineering/Projects/Python/Automation/parents-child-tracking-iot/app/**'
 
   workflow_dispatch:
 
@@ -34,14 +34,14 @@ jobs:
 
       - name: Install dependencies & Build Web
         run: |
-          cd Computer-Engineering/Projects/Python/Automation/child-tracking-iot/parents-child-tracking-iot/app
+          cd Computer-Engineering/Projects/Python/Automation/parents-child-tracking-iot/app
           flutter pub get
           flutter build web --release --target lib/app_frontend_main.dart --base-href "/FIAP/"
 
       - name: Upload artifact for GitHub Pages
         uses: actions/upload-pages-artifact@v3
         with:
-          path: 'Computer-Engineering/Projects/Python/Automation/child-tracking-iot/parents-child-tracking-iot/app/build/web'
+          path: 'Computer-Engineering/Projects/Python/Automation/parents-child-tracking-iot/app/build/web'
           name: parents-app-artifact
 
   deploy:
