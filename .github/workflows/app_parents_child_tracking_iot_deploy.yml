@@ -24,6 +24,13 @@ jobs:
           python-version: '3.10'
           cache: 'pip'
 
+      - name: Set up Flutter SDK
+        uses: subosito/flutter-action@v3
+        with:
+          flutter-version: '3.22.x'
+          channel: 'stable'
+          cache: true
+
       - name: Build Flet Web App (Python)
         run: |
           WORKSPACE_DIR="$GITHUB_WORKSPACE"
@@ -42,11 +49,9 @@ jobs:
           echo "Pasta do app encontrada em: $APP_DIR"
 
           python -m pip install --upgrade pip
-          # Instala rigorosamente as dependências do requirements.txt sem atualizar por fora
           python -m pip install -r "$REQ_FILE"
           
           cd "$APP_DIR"
-          # Compilação limpa com base-url correta e hash routing (sem --yes)
           flet build web --base-url /FIAP/family-trackings/app-mobile/ --route-url-strategy hash
 
           BUILD_SRC="build/web"
