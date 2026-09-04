@@ -231,4 +231,4 @@ def main(page: ft.Page):
     page.push_route(page.route)
 
 if __name__ == "__main__":
-    ft.run(target=main)
+    ft.run(main)
