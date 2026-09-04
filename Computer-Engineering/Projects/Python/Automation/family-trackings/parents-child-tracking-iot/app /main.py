@@ -33,7 +33,7 @@ def main(page: ft.Page):
                                     ft.Icon(ft.Icons.SECURITY, size=64, color=ft.Colors.INDIGO),
                                     ft.Text("Family Trackings IoT", size=24, weight=ft.FontWeight.BOLD, color=ft.Colors.INDIGO_900),
                                     ft.Text("Faça login para monitorar seus dependentes", size=14, color=ft.Colors.GREY_700),
-                                    ft.Container(height=10),
+                                    ft.Container(height=10),  # Corrigido aqui
                                     user_field,
                                     pass_field,
                                     ft.ElevatedButton(
@@ -175,7 +175,7 @@ def main(page: ft.Page):
                 )
             )
 
-        # 4. Tela de Rastreamento (Completada)
+        # 4. Tela de Rastreamento
         elif page.route == "/tracking":
             page.views.append(
                 ft.View(
@@ -233,7 +233,6 @@ def main(page: ft.Page):
     page.on_route_change = route_change
     page.on_view_pop = view_pop
 
-    # Inicializa o carregamento da rota atual
     route_change(None)
 
 if __name__ == "__main__":
