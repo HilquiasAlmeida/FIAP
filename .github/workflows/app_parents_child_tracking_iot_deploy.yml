@@ -24,12 +24,12 @@ jobs:
           python-version: '3.10'
           cache: 'pip'
 
-      - name: Set up Flutter SDK
-        uses: subosito/flutter-action@v3
-        with:
-          flutter-version: '3.22.x'
-          channel: 'stable'
-          cache: true
+      - name: Set up Flutter Manually
+        run: |
+          git clone https://github.com/flutter/flutter.git -b stable --depth 1 _flutter
+          echo "$PWD/_flutter/bin" >> $GITHUB_PATH
+          flutter --version
+          flutter doctor
 
       - name: Build Flet Web App (Python)
         run: |
