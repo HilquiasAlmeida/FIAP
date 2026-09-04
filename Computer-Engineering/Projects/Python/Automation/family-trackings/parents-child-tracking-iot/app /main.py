@@ -12,9 +12,9 @@ def main(page: ft.Page):
         
         # 1. Tela de Login
         if page.route == "/" or page.route == "/login":
-            user_field = ft.TextField(label="E-mail ou Usuário", width=300, border_radius=8, prefix_icon=ft.icons.EMAIL)
-            pass_field = ft.TextField(label="Senha", password=True, can_reveal_password=True, width=300, border_radius=8, prefix_icon=ft.icons.LOCK)
-            error_text = ft.Text("", color=ft.colors.RED)
+            user_field = ft.TextField(label="E-mail ou Usuário", width=300, border_radius=8, prefix_icon=ft.Icons.EMAIL)
+            pass_field = ft.TextField(label="Senha", password=True, can_reveal_password=True, width=300, border_radius=8, prefix_icon=ft.Icons.LOCK)
+            error_text = ft.Text("", color=ft.Colors.RED)
 
             def do_login(e):
                 if not user_field.value or not pass_field.value:
@@ -30,20 +30,20 @@ def main(page: ft.Page):
                         ft.Container(
                             content=ft.Column(
                                 [
-                                    ft.Icon(ft.icons.SECURITY, size=64, color=ft.colors.INDIGO),
-                                    ft.Text("Family Trackings IoT", size=24, weight=ft.FontWeight.BOLD, color=ft.colors.INDIGO_900),
-                                    ft.Text("Faça login para monitorar seus dependentes", size=14, color=ft.colors.GREY_700),
+                                    ft.Icon(ft.Icons.SECURITY, size=64, color=ft.Colors.INDIGO),
+                                    ft.Text("Family Trackings IoT", size=24, weight=ft.FontWeight.BOLD, color=ft.Colors.INDIGO_900),
+                                    ft.Text("Faça login para monitorar seus dependentes", size=14, color=ft.Colors.GREY_700),
                                     ft.Container(height=10),
                                     user_field,
                                     pass_field,
                                     ft.ElevatedButton(
                                         content=ft.Row(
-                                            [ft.Icon(ft.icons.LOGIN), ft.Text("Entrar")],
+                                            [ft.Icon(ft.Icons.LOGIN), ft.Text("Entrar")],
                                             alignment=ft.MainAxisAlignment.CENTER,
                                             spacing=5
                                         ),
-                                        bgcolor=ft.colors.INDIGO,
-                                        color=ft.colors.WHITE,
+                                        bgcolor=ft.Colors.INDIGO,
+                                        color=ft.Colors.WHITE,
                                         width=300,
                                         on_click=do_login
                                     ),
@@ -58,7 +58,7 @@ def main(page: ft.Page):
                             padding=20
                         )
                     ],
-                    bgcolor=ft.colors.GREY_50
+                    bgcolor=ft.Colors.GREY_50
                 )
             )
 
@@ -69,22 +69,22 @@ def main(page: ft.Page):
                     "/dashboard",
                     [
                         ft.AppBar(
-                            title=ft.Text("Family Trackings - Monitoramento", color=ft.colors.WHITE, weight=ft.FontWeight.BOLD),
-                            bgcolor=ft.colors.INDIGO,
+                            title=ft.Text("Family Trackings - Monitoramento", color=ft.Colors.WHITE, weight=ft.FontWeight.BOLD),
+                            bgcolor=ft.Colors.INDIGO,
                             center_title=True,
                             actions=[
-                                ft.IconButton(ft.icons.LOGOUT, tooltip="Sair", icon_color=ft.colors.WHITE, on_click=lambda _: page.go("/login"))
+                                ft.IconButton(ft.Icons.LOGOUT, tooltip="Sair", icon_color=ft.Colors.WHITE, on_click=lambda _: page.go("/login"))
                             ]
                         ),
                         ft.Container(
                             content=ft.Column(
                                 [
-                                    ft.Text("Dispositivos Conectados", size=20, weight=ft.FontWeight.BOLD, color=ft.colors.INDIGO_900),
+                                    ft.Text("Dispositivos Conectados", size=20, weight=ft.FontWeight.BOLD, color=ft.Colors.INDIGO_900),
                                     ft.Card(
                                         content=ft.Container(
                                             content=ft.Column([
                                                 ft.ListTile(
-                                                    leading=ft.Icon(ft.icons.PHONE_ANDROID, color=ft.colors.INDIGO),
+                                                    leading=ft.Icon(ft.Icons.PHONE_ANDROID, color=ft.Colors.INDIGO),
                                                     title=ft.Text("Smartphone - Filho (João)", weight=ft.FontWeight.BOLD),
                                                     subtitle=ft.Text("Status: Online • Localização: Escola • Bateria: 85%"),
                                                 ),
@@ -102,7 +102,7 @@ def main(page: ft.Page):
                                         content=ft.Container(
                                             content=ft.Column([
                                                 ft.ListTile(
-                                                    leading=ft.Icon(ft.icons.WATCH, color=ft.colors.INDIGO),
+                                                    leading=ft.Icon(ft.Icons.WATCH, color=ft.Colors.INDIGO),
                                                     title=ft.Text("Smartwatch - Filha (Maria)", weight=ft.FontWeight.BOLD),
                                                     subtitle=ft.Text("Status: Online • Localização: Parque • Bateria: 62%"),
                                                 ),
@@ -125,9 +125,9 @@ def main(page: ft.Page):
                         )
                     ],
                     floating_action_button=ft.FloatingActionButton(
-                        content=ft.Row([ft.Icon(ft.icons.ADD), ft.Text("Vincular Novo Dispositivo")], alignment=ft.MainAxisAlignment.CENTER, spacing=5),
-                        bgcolor=ft.colors.INDIGO,
-                        color=ft.colors.WHITE,
+                        content=ft.Row([ft.Icon(ft.Icons.ADD), ft.Text("Vincular Novo Dispositivo")], alignment=ft.MainAxisAlignment.CENTER, spacing=5),
+                        bgcolor=ft.Colors.INDIGO,
+                        foreground_color=ft.Colors.WHITE,  # Corrigido de 'color' para 'foreground_color'
                         on_click=lambda _: page.go("/add-device")
                     ),
                 )
@@ -137,15 +137,15 @@ def main(page: ft.Page):
         elif page.route == "/add-device":
             device_code = ft.TextField(label="Código do Dispositivo (IMEI / UUID)", border_radius=8)
             device_name = ft.TextField(label="Nome do Dependente / Aparelho", border_radius=8)
-            status_text = ft.Text("", color=ft.colors.GREEN)
+            status_text = ft.Text("", color=ft.Colors.GREEN)
 
             def save_device(e):
                 if not device_code.value or not device_name.value:
                     status_text.value = "Por favor, preencha todos os campos!"
-                    status_text.color = ft.colors.RED
+                    status_text.color = ft.Colors.RED
                 else:
                     status_text.value = "Dispositivo vinculado com sucesso!"
-                    status_text.color = ft.colors.GREEN
+                    status_text.color = ft.Colors.GREEN
                 page.update()
 
             page.views.append(
@@ -153,9 +153,9 @@ def main(page: ft.Page):
                     "/add-device",
                     [
                         ft.AppBar(
-                            title=ft.Text("Vincular Novo Dispositivo", color=ft.colors.WHITE),
-                            bgcolor=ft.colors.INDIGO,
-                            leading=ft.IconButton(ft.icons.ARROW_BACK, on_click=lambda _: page.go("/dashboard"), icon_color=ft.colors.WHITE),
+                            title=ft.Text("Vincular Novo Dispositivo", color=ft.Colors.WHITE),
+                            bgcolor=ft.Colors.INDIGO,
+                            leading=ft.IconButton(ft.Icons.ARROW_BACK, on_click=lambda _: page.go("/dashboard"), icon_color=ft.Colors.WHITE),
                         ),
                         ft.Container(
                             content=ft.Column(
@@ -165,12 +165,12 @@ def main(page: ft.Page):
                                     device_code,
                                     ft.ElevatedButton(
                                         content=ft.Row(
-                                            [ft.Icon(ft.icons.CHECK), ft.Text("Salvar e Vincular")],
+                                            [ft.Icon(ft.Icons.CHECK), ft.Text("Salvar e Vincular")],
                                             alignment=ft.MainAxisAlignment.CENTER,
                                             spacing=5
                                         ),
-                                        bgcolor=ft.colors.INDIGO,
-                                        color=ft.colors.WHITE,
+                                        bgcolor=ft.Colors.INDIGO,
+                                        color=ft.Colors.WHITE,
                                         on_click=save_device,
                                         width=250
                                     ),
@@ -193,9 +193,9 @@ def main(page: ft.Page):
                     "/tracking",
                     [
                         ft.AppBar(
-                            title=ft.Text("Rastreamento em Tempo Real", color=ft.colors.WHITE),
-                            bgcolor=ft.colors.INDIGO,
-                            leading=ft.IconButton(ft.icons.ARROW_BACK, on_click=lambda _: page.go("/dashboard"), icon_color=ft.colors.WHITE),
+                            title=ft.Text("Rastreamento em Tempo Real", color=ft.Colors.WHITE),
+                            bgcolor=ft.Colors.INDIGO,
+                            leading=ft.IconButton(ft.Icons.ARROW_BACK, on_click=lambda _: page.go("/dashboard"), icon_color=ft.Colors.WHITE),
                         ),
                         ft.Container(
                             content=ft.Column(
@@ -205,7 +205,7 @@ def main(page: ft.Page):
                                         content=ft.Container(
                                             content=ft.Column([
                                                 ft.ListTile(
-                                                    leading=ft.Icon(ft.icons.LOCATION_ON, color=ft.colors.RED),
+                                                    leading=ft.Icon(ft.Icons.LOCATION_ON, color=ft.Colors.RED),
                                                     title=ft.Text("João - Escola Estadual", weight=ft.FontWeight.BOLD),
                                                     subtitle=ft.Text("Última atualização: há 2 minutos\nCoordenadas: -23.5505, -46.6333"),
                                                 )
@@ -217,7 +217,7 @@ def main(page: ft.Page):
                                         content=ft.Container(
                                             content=ft.Column([
                                                 ft.ListTile(
-                                                    leading=ft.Icon(ft.icons.LOCATION_ON, color=ft.colors.GREEN),
+                                                    leading=ft.Icon(ft.Icons.LOCATION_ON, color=ft.Colors.GREEN),
                                                     title=ft.Text("Maria - Parque Ibirapuera", weight=ft.FontWeight.BOLD),
                                                     subtitle=ft.Text("Última atualização: há 5 minutos\nCoordenadas: -23.5882, -46.6582"),
                                                 )
