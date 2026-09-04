@@ -46,8 +46,8 @@ jobs:
           python -m pip install -r "$REQ_FILE"
           
           cd "$APP_DIR"
-          # Compilação limpa com base-url correta e hash routing
-          flet build web --yes --base-url /FIAP/family-trackings/app-mobile/ --route-url-strategy hash
+          # Compilação limpa com base-url correta e hash routing (sem --yes)
+          flet build web --base-url /FIAP/family-trackings/app-mobile/ --route-url-strategy hash
 
           BUILD_SRC="build/web"
           if [ ! -d "$BUILD_SRC" ]; then
