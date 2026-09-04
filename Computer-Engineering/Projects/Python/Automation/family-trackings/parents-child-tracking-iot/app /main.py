@@ -50,7 +50,7 @@ def main(page: ft.Page):
                                 horizontal_alignment=ft.CrossAxisAlignment.CENTER,
                                 spacing=15,
                             ),
-                            alignment=ft.alignment.center,
+                            alignment=ft.alignment.Alignment(0, 0),  # Corrigido aqui
                             expand=True,
                             padding=20
                         )
