@@ -36,9 +36,12 @@ def main(page: ft.Page):
                                     ft.Container(height=10),
                                     user_field,
                                     pass_field,
-                                    ft.ElevatedButton(
-                                        "Entrar",
-                                        icon=ft.Icons.LOGIN,
+                                    ft.Button(
+                                        content=ft.Row(
+                                            [ft.Icon(ft.Icons.LOGIN), ft.Text("Entrar")],
+                                            alignment=ft.MainAxisAlignment.CENTER,
+                                            spacing=5
+                                        ),
                                         bgcolor=ft.Colors.INDIGO,
                                         color=ft.Colors.WHITE,
                                         width=300,
@@ -86,7 +89,10 @@ def main(page: ft.Page):
                                                     subtitle=ft.Text("Status: Online • Localização: Escola • Bateria: 85%"),
                                                 ),
                                                 ft.Row([
-                                                    ft.TextButton("Ver no Mapa", on_click=lambda _: page.run_task(page.push_route, "/tracking")),
+                                                    ft.Button(
+                                                        content=ft.Text("Ver no Mapa"),
+                                                        on_click=lambda _: page.run_task(page.push_route, "/tracking")
+                                                    ),
                                                 ], alignment=ft.MainAxisAlignment.END)
                                             ]),
                                             padding=10
@@ -101,7 +107,10 @@ def main(page: ft.Page):
                                                     subtitle=ft.Text("Status: Online • Localização: Parque • Bateria: 62%"),
                                                 ),
                                                 ft.Row([
-                                                    ft.TextButton("Ver no Mapa", on_click=lambda _: page.run_task(page.push_route, "/tracking")),
+                                                    ft.Button(
+                                                        content=ft.Text("Ver no Mapa"),
+                                                        on_click=lambda _: page.run_task(page.push_route, "/tracking")
+                                                    ),
                                                 ], alignment=ft.MainAxisAlignment.END)
                                             ]),
                                             padding=10
@@ -116,8 +125,7 @@ def main(page: ft.Page):
                         )
                     ],
                     floating_action_button=ft.FloatingActionButton(
-                        "Vincular Novo Dispositivo",
-                        icon=ft.Icons.ADD,
+                        content=ft.Row([ft.Icon(ft.Icons.ADD), ft.Text("Vincular Novo Dispositivo")], alignment=ft.MainAxisAlignment.CENTER, spacing=5),
                         bgcolor=ft.Colors.INDIGO,
                         color=ft.Colors.WHITE,
                         on_click=lambda _: page.run_task(page.push_route, "/add-device")
@@ -155,9 +163,12 @@ def main(page: ft.Page):
                                     ft.Text("Cadastre um novo rastreador IoT", size=18, weight=ft.FontWeight.BOLD),
                                     device_name,
                                     device_code,
-                                    ft.ElevatedButton(
-                                        "Salvar e Vincular",
-                                        icon=ft.Icons.CHECK,
+                                    ft.Button(
+                                        content=ft.Row(
+                                            [ft.Icon(ft.Icons.CHECK), ft.Text("Salvar e Vincular")],
+                                            alignment=ft.MainAxisAlignment.CENTER,
+                                            spacing=5
+                                        ),
                                         bgcolor=ft.Colors.INDIGO,
                                         color=ft.Colors.WHITE,
                                         on_click=save_device,
