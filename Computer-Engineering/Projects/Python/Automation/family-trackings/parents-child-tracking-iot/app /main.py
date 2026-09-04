@@ -21,7 +21,7 @@ def main(page: ft.Page):
                     error_text.value = "Por favor, preencha o e-mail e a senha!"
                     page.update()
                 else:
-                    page.push_route("/dashboard")
+                    page.go("/dashboard")
 
             page.views.append(
                 ft.View(
@@ -70,7 +70,7 @@ def main(page: ft.Page):
                             bgcolor=ft.Colors.INDIGO,
                             center_title=True,
                             actions=[
-                                ft.IconButton(ft.Icons.LOGOUT, tooltip="Sair", icon_color=ft.Colors.WHITE, on_click=lambda _: page.push_route("/login"))
+                                ft.IconButton(ft.Icons.LOGOUT, tooltip="Sair", icon_color=ft.Colors.WHITE, on_click=lambda _: page.go("/login"))
                             ]
                         ),
                         ft.Container(
@@ -86,7 +86,7 @@ def main(page: ft.Page):
                                                     subtitle=ft.Text("Status: Online • Localização: Escola • Bateria: 85%"),
                                                 ),
                                                 ft.Row([
-                                                    ft.TextButton("Ver no Mapa", on_click=lambda _: page.push_route("/tracking")),
+                                                    ft.TextButton("Ver no Mapa", on_click=lambda _: page.go("/tracking")),
                                                 ], alignment=ft.MainAxisAlignment.END)
                                             ]),
                                             padding=10
@@ -101,7 +101,7 @@ def main(page: ft.Page):
                                                     subtitle=ft.Text("Status: Online • Localização: Parque • Bateria: 62%"),
                                                 ),
                                                 ft.Row([
-                                                    ft.TextButton("Ver no Mapa", on_click=lambda _: page.push_route("/tracking")),
+                                                    ft.TextButton("Ver no Mapa", on_click=lambda _: page.go("/tracking")),
                                                 ], alignment=ft.MainAxisAlignment.END)
                                             ]),
                                             padding=10
@@ -120,7 +120,7 @@ def main(page: ft.Page):
                         icon=ft.Icons.ADD,
                         bgcolor=ft.Colors.INDIGO,
                         color=ft.Colors.WHITE,
-                        on_click=lambda _: page.push_route("/add-device")
+                        on_click=lambda _: page.go("/add-device")
                     ),
                 )
             )
@@ -147,7 +147,7 @@ def main(page: ft.Page):
                         ft.AppBar(
                             title=ft.Text("Vincular Novo Dispositivo", color=ft.Colors.WHITE),
                             bgcolor=ft.Colors.INDIGO,
-                            leading=ft.IconButton(ft.Icons.ARROW_BACK, on_click=lambda _: page.push_route("/dashboard"), icon_color=ft.Colors.WHITE),
+                            leading=ft.IconButton(ft.Icons.ARROW_BACK, on_click=lambda _: page.go("/dashboard"), icon_color=ft.Colors.WHITE),
                         ),
                         ft.Container(
                             content=ft.Column(
@@ -184,7 +184,7 @@ def main(page: ft.Page):
                         ft.AppBar(
                             title=ft.Text("Rastreamento em Tempo Real", color=ft.Colors.WHITE),
                             bgcolor=ft.Colors.INDIGO,
-                            leading=ft.IconButton(ft.Icons.ARROW_BACK, on_click=lambda _: page.push_route("/dashboard"), icon_color=ft.Colors.WHITE),
+                            leading=ft.IconButton(ft.Icons.ARROW_BACK, on_click=lambda _: page.go("/dashboard"), icon_color=ft.Colors.WHITE),
                         ),
                         ft.Container(
                             content=ft.Column(
@@ -224,11 +224,14 @@ def main(page: ft.Page):
     def view_pop(view):
         page.views.pop()
         top_view = page.views[-1]
-        page.push_route(top_view.route)
+        page.go(top_view.route)
 
     page.on_route_change = route_change
     page.on_view_pop = view_pop
-    page.push_route(page.route)
+    
+    # Inicializa a rota inicial de forma limpa
+    page.go(page.route if page.route else "/")
 
 if __name__ == "__main__":
     ft.run(main)
+    
