@@ -1,13 +1,13 @@
 import flet as ft
 
-def main(page: ft.Page):
+async def main(page: ft.Page):
     page.title = "Family Trackings IoT - Painel Pais & Filhos"
     page.vertical_alignment = ft.MainAxisAlignment.CENTER
     page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
     page.theme_mode = ft.ThemeMode.LIGHT
     page.padding = 0
 
-    def route_change(route):
+    async def route_change(route):
         page.views.clear()
         
         # 1. Tela de Login (Página Inicial)
@@ -16,12 +16,12 @@ def main(page: ft.Page):
             pass_field = ft.TextField(label="Senha", password=True, can_reveal_password=True, width=300, border_radius=8, prefix_icon=ft.Icons.LOCK)
             error_text = ft.Text("", color=ft.Colors.RED)
 
-            def do_login(e):
+            async def do_login(e):
                 if not user_field.value or not pass_field.value:
                     error_text.value = "Por favor, preencha o e-mail e a senha!"
                     page.update()
                 else:
-                    page.go("/dashboard")
+                    await page.push_route("/dashboard")
 
             page.views.append(
                 ft.View(
@@ -70,7 +70,7 @@ def main(page: ft.Page):
                             bgcolor=ft.Colors.INDIGO,
                             center_title=True,
                             actions=[
-                                ft.IconButton(ft.Icons.LOGOUT, tooltip="Sair", icon_color=ft.Colors.WHITE, on_click=lambda _: page.go("/login"))
+                                ft.IconButton(ft.Icons.LOGOUT, tooltip="Sair", icon_color=ft.Colors.WHITE, on_click=lambda _: page.run_task(page.push_route, "/login"))
                             ]
                         ),
                         ft.Container(
@@ -86,7 +86,7 @@ def main(page: ft.Page):
                                                     subtitle=ft.Text("Status: Online • Localização: Escola • Bateria: 85%"),
                                                 ),
                                                 ft.Row([
-                                                    ft.TextButton("Ver no Mapa", on_click=lambda _: page.go("/tracking")),
+                                                    ft.TextButton("Ver no Mapa", on_click=lambda _: page.run_task(page.push_route, "/tracking")),
                                                 ], alignment=ft.MainAxisAlignment.END)
                                             ]),
                                             padding=10
@@ -101,7 +101,7 @@ def main(page: ft.Page):
                                                     subtitle=ft.Text("Status: Online • Localização: Parque • Bateria: 62%"),
                                                 ),
                                                 ft.Row([
-                                                    ft.TextButton("Ver no Mapa", on_click=lambda _: page.go("/tracking")),
+                                                    ft.TextButton("Ver no Mapa", on_click=lambda _: page.run_task(page.push_route, "/tracking")),
                                                 ], alignment=ft.MainAxisAlignment.END)
                                             ]),
                                             padding=10
@@ -120,7 +120,7 @@ def main(page: ft.Page):
                         icon=ft.Icons.ADD,
                         bgcolor=ft.Colors.INDIGO,
                         color=ft.Colors.WHITE,
-                        on_click=lambda _: page.go("/add-device")
+                        on_click=lambda _: page.run_task(page.push_route, "/add-device")
                     ),
                 )
             )
@@ -147,7 +147,7 @@ def main(page: ft.Page):
                         ft.AppBar(
                             title=ft.Text("Vincular Novo Dispositivo", color=ft.Colors.WHITE),
                             bgcolor=ft.Colors.INDIGO,
-                            leading=ft.IconButton(ft.Icons.ARROW_BACK, on_click=lambda _: page.go("/dashboard"), icon_color=ft.Colors.WHITE),
+                            leading=ft.IconButton(ft.Icons.ARROW_BACK, on_click=lambda _: page.run_task(page.push_route, "/dashboard"), icon_color=ft.Colors.WHITE),
                         ),
                         ft.Container(
                             content=ft.Column(
@@ -184,7 +184,7 @@ def main(page: ft.Page):
                         ft.AppBar(
                             title=ft.Text("Rastreamento em Tempo Real", color=ft.Colors.WHITE),
                             bgcolor=ft.Colors.INDIGO,
-                            leading=ft.IconButton(ft.Icons.ARROW_BACK, on_click=lambda _: page.go("/dashboard"), icon_color=ft.Colors.WHITE),
+                            leading=ft.IconButton(ft.Icons.ARROW_BACK, on_click=lambda _: page.run_task(page.push_route, "/dashboard"), icon_color=ft.Colors.WHITE),
                         ),
                         ft.Container(
                             content=ft.Column(
@@ -221,17 +221,15 @@ def main(page: ft.Page):
             )
         page.update()
 
-    def view_pop(view):
+    async def view_pop(view):
         page.views.pop()
         top_view = page.views[-1]
-        page.go(top_view.route)
+        await page.push_route(top_view.route)
 
     page.on_route_change = route_change
     page.on_view_pop = view_pop
     
-    # Inicializa a rota inicial de forma limpa
-    page.go(page.route if page.route else "/")
+    await page.push_route(page.route if page.route else "/")
 
 if __name__ == "__main__":
     ft.run(main)
-    
