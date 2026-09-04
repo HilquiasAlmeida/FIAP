@@ -37,7 +37,7 @@ def main(page: ft.Page):
                                     user_field,
                                     pass_field,
                                     ft.ElevatedButton(
-                                        text="Entrar",
+                                        "Entrar",
                                         icon=ft.Icons.LOGIN,
                                         bgcolor=ft.Colors.INDIGO,
                                         color=ft.Colors.WHITE,
@@ -86,7 +86,7 @@ def main(page: ft.Page):
                                                     subtitle=ft.Text("Status: Online • Localização: Escola • Bateria: 85%"),
                                                 ),
                                                 ft.Row([
-                                                    ft.TextButton(text="Ver no Mapa", on_click=lambda _: page.run_task(page.push_route, "/tracking")),
+                                                    ft.TextButton("Ver no Mapa", on_click=lambda _: page.run_task(page.push_route, "/tracking")),
                                                 ], alignment=ft.MainAxisAlignment.END)
                                             ]),
                                             padding=10
@@ -101,7 +101,7 @@ def main(page: ft.Page):
                                                     subtitle=ft.Text("Status: Online • Localização: Parque • Bateria: 62%"),
                                                 ),
                                                 ft.Row([
-                                                    ft.TextButton(text="Ver no Mapa", on_click=lambda _: page.run_task(page.push_route, "/tracking")),
+                                                    ft.TextButton("Ver no Mapa", on_click=lambda _: page.run_task(page.push_route, "/tracking")),
                                                 ], alignment=ft.MainAxisAlignment.END)
                                             ]),
                                             padding=10
@@ -116,7 +116,7 @@ def main(page: ft.Page):
                         )
                     ],
                     floating_action_button=ft.FloatingActionButton(
-                        text="Vincular Novo Dispositivo",
+                        "Vincular Novo Dispositivo",
                         icon=ft.Icons.ADD,
                         bgcolor=ft.Colors.INDIGO,
                         color=ft.Colors.WHITE,
@@ -156,7 +156,7 @@ def main(page: ft.Page):
                                     device_name,
                                     device_code,
                                     ft.ElevatedButton(
-                                        text="Salvar e Vincular",
+                                        "Salvar e Vincular",
                                         icon=ft.Icons.CHECK,
                                         bgcolor=ft.Colors.INDIGO,
                                         color=ft.Colors.WHITE,
