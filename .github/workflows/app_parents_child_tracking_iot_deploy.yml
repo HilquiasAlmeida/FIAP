@@ -42,11 +42,11 @@ jobs:
           echo "Pasta do app encontrada em: $APP_DIR"
 
           python -m pip install --upgrade pip
+          # Instala rigorosamente as dependências do requirements.txt sem atualizar por fora
           python -m pip install -r "$REQ_FILE"
-          python -m pip install flet
           
           cd "$APP_DIR"
-          # Compilação rigorosa com base-url correta e hash routing para evitar tela em branco
+          # Compilação limpa com base-url correta e hash routing
           flet build web --yes --base-url /FIAP/family-trackings/app-mobile/ --route-url-strategy hash
 
           BUILD_SRC="build/web"
@@ -59,7 +59,6 @@ jobs:
             exit 1
           fi
 
-          # Cria o fallback 404.html para o GitHub Pages não quebrar rotas do Flet
           if [ -f "$BUILD_SRC/index.html" ]; then
             cp "$BUILD_SRC/index.html" "$BUILD_SRC/404.html"
           fi
@@ -122,6 +121,5 @@ jobs:
             echo "Nenhuma alteração detectada no código do app mobile."
           fi
 
-          # Link gerado no Summary da Actions
           echo "### 📱 APP MOBILE PUBLICADO COM SUCESSO!" >> $GITHUB_STEP_SUMMARY
           echo "<p><a href=\"https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/family-trackings/app-mobile/\" target=\"_blank\" style=\"font-size: 16px; font-weight: bold;\">🔗 Clique aqui para abrir o App Mobile em uma nova aba ↗</a></p>" >> $GITHUB_STEP_SUMMARY
