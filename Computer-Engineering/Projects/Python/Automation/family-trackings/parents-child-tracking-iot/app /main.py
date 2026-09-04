@@ -127,7 +127,7 @@ def main(page: ft.Page):
                     floating_action_button=ft.FloatingActionButton(
                         content=ft.Row([ft.Icon(ft.Icons.ADD), ft.Text("Vincular Novo Dispositivo")], alignment=ft.MainAxisAlignment.CENTER, spacing=5),
                         bgcolor=ft.Colors.INDIGO,
-                        foreground_color=ft.Colors.WHITE,  # Corrigido de 'color' para 'foreground_color'
+                        foreground_color=ft.Colors.WHITE,  # Correção crítica aplicada
                         on_click=lambda _: page.go("/add-device")
                     ),
                 )
