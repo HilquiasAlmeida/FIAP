@@ -21,7 +21,6 @@ def main(page: ft.Page):
                     error_text.value = "Por favor, preencha o e-mail e a senha!"
                     page.update()
                 else:
-                    # Login bem-sucedido, vai para o dashboard
                     page.push_route("/dashboard")
 
             page.views.append(
