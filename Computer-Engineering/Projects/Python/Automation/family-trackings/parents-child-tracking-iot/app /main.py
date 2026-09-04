@@ -36,8 +36,8 @@ def main(page: ft.Page):
                                     ft.Container(height=10),
                                     user_field,
                                     pass_field,
-                                    ft.Button(
-                                        "Entrar",
+                                    ft.ElevatedButton(
+                                        text="Entrar",
                                         icon=ft.Icons.LOGIN,
                                         bgcolor=ft.Colors.INDIGO,
                                         color=ft.Colors.WHITE,
@@ -50,7 +50,7 @@ def main(page: ft.Page):
                                 horizontal_alignment=ft.CrossAxisAlignment.CENTER,
                                 spacing=15,
                             ),
-                            alignment=ft.alignment.Alignment(0, 0),  # Corrigido aqui
+                            alignment=ft.alignment.Alignment(0, 0),
                             expand=True,
                             padding=20
                         )
@@ -86,7 +86,7 @@ def main(page: ft.Page):
                                                     subtitle=ft.Text("Status: Online • Localização: Escola • Bateria: 85%"),
                                                 ),
                                                 ft.Row([
-                                                    ft.Button("Ver no Mapa", on_click=lambda _: page.run_task(page.push_route, "/tracking")),
+                                                    ft.TextButton(text="Ver no Mapa", on_click=lambda _: page.run_task(page.push_route, "/tracking")),
                                                 ], alignment=ft.MainAxisAlignment.END)
                                             ]),
                                             padding=10
@@ -101,7 +101,7 @@ def main(page: ft.Page):
                                                     subtitle=ft.Text("Status: Online • Localização: Parque • Bateria: 62%"),
                                                 ),
                                                 ft.Row([
-                                                    ft.Button("Ver no Mapa", on_click=lambda _: page.run_task(page.push_route, "/tracking")),
+                                                    ft.TextButton(text="Ver no Mapa", on_click=lambda _: page.run_task(page.push_route, "/tracking")),
                                                 ], alignment=ft.MainAxisAlignment.END)
                                             ]),
                                             padding=10
@@ -116,8 +116,10 @@ def main(page: ft.Page):
                         )
                     ],
                     floating_action_button=ft.FloatingActionButton(
-                        content=ft.Row([ft.Icon(ft.Icons.ADD, color=ft.Colors.WHITE), ft.Text("Vincular Novo Dispositivo", color=ft.Colors.WHITE)], alignment=ft.MainAxisAlignment.CENTER),
+                        text="Vincular Novo Dispositivo",
+                        icon=ft.Icons.ADD,
                         bgcolor=ft.Colors.INDIGO,
+                        color=ft.Colors.WHITE,
                         on_click=lambda _: page.run_task(page.push_route, "/add-device")
                     ),
                 )
@@ -153,8 +155,8 @@ def main(page: ft.Page):
                                     ft.Text("Cadastre um novo rastreador IoT", size=18, weight=ft.FontWeight.BOLD),
                                     device_name,
                                     device_code,
-                                    ft.Button(
-                                        "Salvar e Vincular",
+                                    ft.ElevatedButton(
+                                        text="Salvar e Vincular",
                                         icon=ft.Icons.CHECK,
                                         bgcolor=ft.Colors.INDIGO,
                                         color=ft.Colors.WHITE,
