@@ -46,7 +46,9 @@ Você pode acessar as versões web dos sistemas diretamente pelos links abaixo:
     Acessar Parents-Child Tracking Web
 
 * 📱 **Versão Mobile / Web App:**
+  <br>
   <a href="https://hilquiasalmeida.github.io/FIAP/family-trackings/app-mobile/" target="_blank">
     Acessar Parents-Child Tracking Web
   </a>
+  <br>
   (Disponível através do mesmo ambiente progressivo compilado via WebAssembly)
