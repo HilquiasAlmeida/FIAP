@@ -1,13 +1,13 @@
 import flet as ft
 
-async def main(page: ft.Page):
+def main(page: ft.Page):
     page.title = "Family Trackings IoT - Painel Pais & Filhos"
     page.vertical_alignment = ft.MainAxisAlignment.CENTER
     page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
     page.theme_mode = ft.ThemeMode.LIGHT
     page.padding = 0
 
-    async def route_change(route):
+    def route_change(e):
         page.views.clear()
         
         # 1. Tela de Login (Página Inicial)
@@ -175,7 +175,7 @@ async def main(page: ft.Page):
                 )
             )
 
-        # 4. Tela de Rastreamento
+        # 4. Tela de Rastreamento (Completada)
         elif page.route == "/tracking":
             page.views.append(
                 ft.View(
@@ -189,47 +189,52 @@ async def main(page: ft.Page):
                         ft.Container(
                             content=ft.Column(
                                 [
-                                    ft.Text("Coordenadas Atuais", size=18, weight=ft.FontWeight.BOLD),
+                                    ft.Text("Localização Atual dos Dependentes", size=18, weight=ft.FontWeight.BOLD),
                                     ft.Card(
                                         content=ft.Container(
                                             content=ft.Column([
                                                 ft.ListTile(
                                                     leading=ft.Icon(ft.Icons.LOCATION_ON, color=ft.Colors.RED),
-                                                    title=ft.Text("Latitude: -23.550520, Longitude: -46.633308"),
-                                                    subtitle=ft.Text("Última atualização: Há 2 minutos"),
-                                                )
+                                                    title=ft.Text("João - Escola Estadual", weight=ft.FontWeight.BOLD),
+                                                    subtitle=ft.Text("Última atualização: há 2 minutos\nCoordenadas: -23.5505, -46.6333"),
+                                                ),
                                             ]),
-                                            padding=15
+                                            padding=10
+                                        )
+                                    ),
+                                    ft.Card(
+                                        content=ft.Container(
+                                            content=ft.Column([
+                                                ft.ListTile(
+                                                    leading=ft.Icon(ft.Icons.LOCATION_ON, color=ft.Colors.GREEN),
+                                                    title=ft.Text("Maria - Parque Ibirapuera", weight=ft.FontWeight.BOLD),
+                                                    subtitle=ft.Text("Última atualização: há 5 minutos\nCoordenadas: -23.5882, -46.6582"),
+                                                ),
+                                            ]),
+                                            padding=10
                                         )
                                     ),
                                 ],
-                                spacing=20
+                                spacing=15,
                             ),
                             padding=20,
                             expand=True,
                         )
-                    ],
-                    floating_action_button=ft.FloatingActionButton(
-                        text="Atualizar",
-                        icon=ft.Icons.REFRESH,
-                        bgcolor=ft.Colors.INDIGO,
-                        color=ft.Colors.WHITE,
-                        on_click=lambda _: page.update(),
-                        tooltip="Atualizar Posição"
-                    )
+                    ]
                 )
             )
         page.update()
 
-    async def view_pop(view):
+    async def view_pop(e):
         page.views.pop()
         top_view = page.views[-1]
         await page.push_route(top_view.route)
 
     page.on_route_change = route_change
     page.on_view_pop = view_pop
-    
-    await page.push_route(page.route if page.route else "/")
+
+    # Inicializa o carregamento da rota atual
+    route_change(None)
 
 if __name__ == "__main__":
     ft.run(main)
