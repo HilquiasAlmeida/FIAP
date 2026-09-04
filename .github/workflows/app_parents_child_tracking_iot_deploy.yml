@@ -30,7 +30,7 @@ jobs:
           echo "$PWD/_flutter/bin" >> $GITHUB_PATH
           export PATH="$PWD/_flutter/bin:$PATH"
           flutter --version
-          flutter doctor
+          flutter config --no-analytics
 
       - name: Build Flet Web App (Python)
         run: |
