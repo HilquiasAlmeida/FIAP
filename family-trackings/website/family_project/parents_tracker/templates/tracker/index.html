@@ -1,24 +1,29 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Family Trackings IoT</title>
-    <!-- Linkando o CSS -->
+    <title>Family Trackings - IoT</title>
+    <!-- Linkando o CSS unificado -->
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 <body>
 
-    <header>
-        <h1>Painel de Monitoramento Familiar IoT</h1>
-    </header>
-
     <div class="container">
-        <h2>Bem-vindo ao Sistema</h2>
-        <p>Acompanhe a localização dos seus dependentes em tempo real através do PostgreSQL e Django.</p>
+        <span class="badge">Projeto FIAP - Automação & IoT</span>
+        <h1>Family Trackings</h1>
+        <p>Sistema inteligente de rastreamento e monitoramento familiar integrado com dispositivos embarcados (ESP32) e aplicações multiplataforma.</p>
         
-        <button id="alertBtn">Testar Conexão IoT</button>
+        <div class="links">
+            <a href="#" class="btn">Acessar App Mobile</a>
+            <a href="#" class="btn" style="background: #e67e22;">Acessar Painel do Sistema</a>
+        </div>
+
+        <div style="margin-top: 35px; border-top: 1px solid #eee; padding-top: 20px;">
+            <p style="font-size: 0.9rem; margin-bottom: 15px;">Integração com o Banco PostgreSQL e Django ativa.</p>
+            <button id="alertBtn">Testar Conexão IoT</button>
+        </div>
     </div>
 
     <!-- Linkando o JavaScript -->
