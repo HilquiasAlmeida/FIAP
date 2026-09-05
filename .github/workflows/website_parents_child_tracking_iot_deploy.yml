@@ -49,11 +49,27 @@ jobs:
           # Prepara a subpasta exata no GitHub Pages
           mkdir -p family-trackings/website
           rm -rf family-trackings/website/*
+
+          # 1. Copia toda a estrutura original mantendo o projeto Django intacto
           cp -r "$WEB_DIR"/* family-trackings/website/
+
+          # 2. Extrai e posiciona o index.html na raiz do site do GitHub Pages usando o novo caminho (parents_tracker)
+          INDEX_PATH="$WEB_DIR/family_project/parents_tracker/templates/tracker/index.html"
+          
+          if [ -f "$INDEX_PATH" ]; then
+            cp "$INDEX_PATH" family-trackings/website/index.html
+            
+            # Ajusta automaticamente as tags do Django para os novos caminhos estáticos da pasta parents_tracker
+            sed -i 's/{% load static %}//g' family-trackings/website/index.html
+            sed -i "s/{% static 'css\/style.css' %}/family_project\/parents_tracker\/static\/css\/style.css/g" family-trackings/website/index.html
+            sed -i "s/{% static 'js\/script.js' %}/family_project\/parents_tracker\/static\/js\/script.js/g" family-trackings/website/index.html
+          else
+            echo "Aviso: index.html não foi encontrado no caminho especificado: $INDEX_PATH"
+          fi
 
           git add .
           if git status --porcelain | grep -q .; then
-            git commit -m "Deploy independente: Atualizando website [skip ci]"
+            git commit -m "Deploy automático: Ajustando rotas para a estrutura parents_tracker [skip ci]"
             git push origin gh-pages
             echo "===================================================="
             echo "🌐 WEBSITE PUBLICADO COM SUCESSO!"
