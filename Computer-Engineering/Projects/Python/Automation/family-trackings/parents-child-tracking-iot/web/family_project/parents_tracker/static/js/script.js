@@ -1,7 +1,6 @@
 document.addEventListener("DOMContentLoaded", function() {
-    console.log("Painel IoT Family Tracking carregado com sucesso!");
+    console.log("Painel IoT Family Tracking carregado com sucesso via GitHub!");
     
-    // Exemplo de interatividade simples
     const alertBtn = document.getElementById("alertBtn");
     if (alertBtn) {
         alertBtn.addEventListener("click", function() {
