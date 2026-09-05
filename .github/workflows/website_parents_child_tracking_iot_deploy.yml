@@ -35,10 +35,10 @@ jobs:
           echo "📂 Organizando arquivos para publicação..."
           mkdir -p "$WORKSPACE_DIR/build_output/family-trackings/website"
           
-          # 1. Copia o conteúdo da web (HTML, CSS, JS, etc.)
+          # Copia o conteúdo da web
           cp -r "$WEB_DIR"/* "$WORKSPACE_DIR/build_output/family-trackings/website/"
           
-          # 2. Copia a pasta app (com o main.py) para dentro do site
+          # Copia a pasta app (com o main.py)
           if [ -d "$APP_DIR" ]; then
             mkdir -p "$WORKSPACE_DIR/build_output/family-trackings/website/app"
             cp -r "$APP_DIR"/* "$WORKSPACE_DIR/build_output/family-trackings/website/app/"
@@ -68,7 +68,7 @@ jobs:
           name: website-files
           path: build_output/family-trackings/website/
 
-      - name: 3. Deploy to GitHub Pages
+      - name: 3. Deploy to GitHub Pages (Clean Root)
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -81,17 +81,21 @@ jobs:
           mkdir -p temp_gh_pages_web
           cd temp_gh_pages_web
 
+          # Clona a branch gh-pages
           git clone --branch gh-pages --single-branch https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git . || \
           ( git init && git checkout -b gh-pages && git remote add origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git )
 
           git checkout gh-pages || git checkout -b gh-pages
 
-          # Atualiza os arquivos do projeto na pasta correta
+          # 🧹 LIMPEZA TOTAL DA RAIZ: Remove absolutamente TUDO na branch gh-pages, exceto o .git
+          echo "🧹 Removendo arquivos residuais antigos da raiz..."
+          find . -maxdepth 1 ! -name '.' ! -name '.git' -exec rm -rf {} +
+
+          # Recria a estrutura limpa com os arquivos novos
           mkdir -p family-trackings/website
-          rm -rf family-trackings/website/*
           cp -r "$WORKSPACE_DIR/build_output/family-trackings/website/"* family-trackings/website/
 
-          # 🚀 REDIRECIONAMENTO INTELIGENTE NA RAIZ
+          # Cria o novo index.html de redirecionamento limpo na raiz
           cat << 'EOF' > index.html
           <!DOCTYPE html>
           <html>
@@ -106,23 +110,18 @@ jobs:
           </html>
           EOF
 
-          git add .
+          git add -A
           if git status --porcelain | grep -q .; then
-            git commit -m "Deploy automático: Correção de path do artefato e atualização [skip ci]"
+            git commit -m "Deploy limpo: Eliminação de arquivos antigos da FIAP e atualização [skip ci]"
             git push origin gh-pages
-            echo "✅ Alterações enviadas com sucesso para o GitHub Pages!"
+            echo "✅ Branch gh-pages limpa e atualizada com sucesso!"
           else
-            echo "ℹ️ Nenhuma alteração nova detectada."
+            echo "ℹ️ Nenhuma alteração detectada."
           fi
 
           SITE_URL="https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/family-trackings/website/"
           
           echo "===================================================="
-          echo "🌐 WEBSITE E CÓDIGO DISPONÍVEIS NO AR!"
-          echo "🔗 Link: $SITE_URL"
+          echo "🌐 URL DO PROJETO:"
+          echo "🔗 $SITE_URL"
           echo "===================================================="
-          
-          echo "## 🚀 Deploy Realizado com Sucesso!" >> $GITHUB_STEP_SUMMARY
-          echo "O site e os arquivos do app foram publicados." >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "👉 **[Clique aqui para acessar o projeto]($SITE_URL)**" >> $GITHUB_STEP_SUMMARY
