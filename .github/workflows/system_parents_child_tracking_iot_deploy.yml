@@ -12,47 +12,112 @@ permissions:
   contents: write
 
 jobs:
-  deploy-system:
+  # --- ETAPA 1: BUILD SYSTEM ---
+  build-system:
+    name: build system
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Prepare System Files & Dashboard Vitrine
+        run: |
+          WORKSPACE_DIR="$GITHUB_WORKSPACE"
+          SRC_DIR="Automation/family-trackings/system"
+          SITE_OUT="$WORKSPACE_DIR/build_output/family-trackings/system"
+          
+          mkdir -p "$SITE_OUT"
+          
+          if [ -d "$SRC_DIR" ]; then
+            # Copia todos os arquivos do system (main.py, backend, etc.)
+            cp -r "$SRC_DIR"/* "$SITE_OUT/"
+            
+            # Se houver a pasta web_dashboard, converte o login.html na página principal (index.html) da vitrine visual
+            if [ -d "$SRC_DIR/web_dashboard" ]; then
+              cp -r "$SRC_DIR/web_dashboard"/* "$SITE_OUT/"
+              if [ -f "$SITE_OUT/login.html" ] && [ ! -f "$SITE_OUT/index.html" ]; then
+                cp "$SITE_OUT/login.html" "$SITE_OUT/index.html"
+                echo "✅ Tela de login definida como página principal (index.html) da vitrine!"
+              fi
+            fi
+          fi
+          
+          # Garante um index.html básico caso não exista nenhum
+          if [ ! -f "$SITE_OUT/index.html" ]; then
+            echo "<h1 style='font-family:Arial;'>Sistema IoT - Family Trackings</h1>" > "$SITE_OUT/index.html"
+          fi
+
+          echo "✅ Build do system concluído com sucesso!"
+
+      - name: Upload System Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: system-files
+          path: build_output/family-trackings/system/
+
+  # --- ETAPA 2: DEPLOY SYSTEM ---
+  deploy-system:
+    needs: build-system
+    name: deploy system
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Download System Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: system-files
+          path: build_output/family-trackings/system/
+
       - name: Deploy System to gh-pages (Isolated)
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          WORKSPACE_DIR="$GITHUB_WORKSPACE"
+          
           git config --global user.name "GitHub Actions Bot"
           git config --global user.email "actions@github.com"
 
-          # Garante que a pasta de origem existe e tem um index.html básico
-          SRC_DIR="Automation/family-trackings/system"
-          mkdir -p "$SRC_DIR"
-          if [ ! -f "$SRC_DIR/index.html" ]; then
-            echo "<h1 style='font-family:Arial;'>Sistema IoT - Family Trackings</h1>" > "$SRC_DIR/index.html"
-          fi
+          cd "$WORKSPACE_DIR"
+          mkdir -p gh_pages_branch
+          cd gh_pages_branch
 
           # Clona apenas a branch gh-pages para uma pasta temporária (ou cria se não existir)
-          git clone --branch gh-pages --single-branch https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git gh_pages_branch || \
-          ( mkdir gh_pages_branch && cd gh_pages_branch && git init && git checkout -b gh-pages && cd .. )
+          git clone --branch gh-pages --single-branch https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git . || \
+          ( git init && git checkout -b gh-pages && git remote add origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git )
 
-          cd gh_pages_branch
-          git remote remove origin || true
-          git remote add origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
           git checkout gh-pages || git checkout -b gh-pages
 
           # Prepara a subpasta específica do system sem afetar as outras
           mkdir -p family-trackings/system
           rm -rf family-trackings/system/*
 
-          # Copia os arquivos novos do sistema
-          cp -r ../$SRC_DIR/* family-trackings/system/
+          # Copia os arquivos do build otimizado
+          cp -r "$WORKSPACE_DIR/build_output/family-trackings/system/"* family-trackings/system/
+
+          # Garante o arquivo .nojekyll para evitar restrições do GitHub Pages
+          touch .nojekyll
 
           # Verifica se houve mudanças e faz o commit/push isolado
-          git add .
+          git add -A
           if git status --porcelain | grep -q .; then
-            git commit -m "Deploy independente: Atualizando system do family-trackings [skip ci]"
+            git commit -m "Deploy independente: Atualizando system do family-trackings com vitrine visual [skip ci]"
             git push origin gh-pages
+            echo "✅ Módulo system enviado com sucesso para o GitHub Pages!"
           else
-            echo "Nenhuma alteração detectada para o sistema."
+            echo "ℹ️ Nenhuma alteração detectada para o sistema."
           fi
+
+          SYSTEM_URL="https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/family-trackings/system/"
+          
+          echo "===================================================="
+          echo "⚙️ SISTEMA DISPONÍVEL NO AR!"
+          echo "🔗 Link: $SYSTEM_URL"
+          echo "===================================================="
+          
+          # Gera o card com o link clicável nomeado "System" no resumo do GitHub Actions
+          echo "## 🚀 System Deploy Realizado com Sucesso!" >> $GITHUB_STEP_SUMMARY
+          echo "O painel visual e os códigos do system foram publicados com sucesso." >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "👉 **[Acessar o System]($SYSTEM_URL)**" >> $GITHUB_STEP_SUMMARY
