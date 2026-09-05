@@ -1,1 +1,27 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Family Trackings IoT</title>
+    <!-- Linkando o CSS -->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
 
+    <header>
+        <h1>Painel de Monitoramento Familiar IoT</h1>
+    </header>
+
+    <div class="container">
+        <h2>Bem-vindo ao Sistema</h2>
+        <p>Acompanhe a localização dos seus dependentes em tempo real.</p>
+        
+        <button id="alertBtn">Testar Conexão IoT</button>
+    </div>
+
+    <!-- Linkando o JavaScript -->
+    <script src="{% static 'js/script.js' %}"></script>
+</body>
+</html>
