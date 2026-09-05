@@ -4,7 +4,7 @@ on:
   push:
     branches: [ main, master ]
     paths:
-      - 'Automation/family-trackings/system/**'
+      - 'Computer-Engineering/Projects/Python/Automation/family-trackings/parents-child-tracking-iot/system/**'
       - '.github/workflows/system_parents_child_tracking_iot_deploy.yml'
   workflow_dispatch:
 
@@ -23,7 +23,7 @@ jobs:
       - name: Prepare System Files & Dashboard Vitrine
         run: |
           WORKSPACE_DIR="$GITHUB_WORKSPACE"
-          SRC_DIR="Automation/family-trackings/system"
+          SRC_DIR="Computer-Engineering/Projects/Python/Automation/family-trackings/parents-child-tracking-iot/system"
           SITE_OUT="$WORKSPACE_DIR/build_output/family-trackings/system"
           
           mkdir -p "$SITE_OUT"
