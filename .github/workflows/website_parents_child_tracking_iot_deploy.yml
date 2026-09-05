@@ -12,8 +12,9 @@ permissions:
   contents: write
 
 jobs:
-  # --- JOB 1: BUILD (Prepara e valida os arquivos do site) ---
+  # --- ETAPA 1: BUILD ---
   build:
+    name: build
     runs-on: ubuntu-latest
     steps:
       - name: 1. Checkout repository
@@ -31,7 +32,6 @@ jobs:
           
           echo "Pasta web encontrada com sucesso em: $WEB_DIR"
           
-          # Cria a pasta de build local no runner
           mkdir -p "$WORKSPACE_DIR/build_output/family-trackings/website"
           cp -r "$WEB_DIR"/* "$WORKSPACE_DIR/build_output/family-trackings/website/"
           
@@ -43,9 +43,10 @@ jobs:
           name: website-files
           path: build_output/family-trackings/website/
 
-  # --- JOB 2: DEPLOY (Só roda se o build ficar verde) ---
+  # --- ETAPA 2: DEPLOY WEBSITE (Conectado ao build) ---
   deploy-website:
-    needs: build  # <-- É aqui que a mágica acontece: O deploy aguarda o build ficar verde!
+    needs: build
+    name: deploy website
     runs-on: ubuntu-latest
     steps:
       - name: 1. Checkout repository
@@ -91,9 +92,11 @@ jobs:
             echo "🔗 Link: $SITE_URL"
             echo "===================================================="
             
-            echo "### 🚀 Deploy Realizado com Sucesso!" >> $GITHUB_STEP_SUMMARY
-            echo "O site multipágina do projeto **family-trackings** foi publicado." >> $GITHUB_STEP_SUMMARY
-            echo "👉 **[Clique aqui para acessar a página do projeto]($SITE_URL)**" >> $GITHUB_STEP_SUMMARY
+            # Adiciona o link visível no rodapé/sumário da Action quando ficar verde
+            echo "## 🚀 Deploy Realizado com Sucesso!" >> $GITHUB_STEP_SUMMARY
+            echo "O site multipágina do projeto **family-trackings** foi publicado e já está no ar." >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "👉 **[Acesse o site do projeto aqui]($SITE_URL)**" >> $GITHUB_STEP_SUMMARY
           else
             echo "Nenhuma alteração detectada para o website."
           fi
