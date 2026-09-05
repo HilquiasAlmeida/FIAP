@@ -43,7 +43,7 @@ jobs:
           name: website-files
           path: build_output/family-trackings/website/
 
-  # --- ETAPA 2: DEPLOY WEBSITE (Conectado ao build) ---
+  # --- ETAPA 2: DEPLOY WEBSITE ---
   deploy-website:
     needs: build
     name: deploy website
@@ -84,19 +84,21 @@ jobs:
           if git status --porcelain | grep -q .; then
             git commit -m "Deploy automático: Atualização do site multi-página family-trackings [skip ci]"
             git push origin gh-pages
-            
-            SITE_URL="https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/family-trackings/website/"
-            
-            echo "===================================================="
-            echo "🌐 WEBSITE PUBLICADO COM SUCESSO!"
-            echo "🔗 Link: $SITE_URL"
-            echo "===================================================="
-            
-            # Adiciona o link visível no rodapé/sumário da Action quando ficar verde
-            echo "## 🚀 Deploy Realizado com Sucesso!" >> $GITHUB_STEP_SUMMARY
-            echo "O site multipágina do projeto **family-trackings** foi publicado e já está no ar." >> $GITHUB_STEP_SUMMARY
-            echo "" >> $GITHUB_STEP_SUMMARY
-            echo "👉 **[Acesse o site do projeto aqui]($SITE_URL)**" >> $GITHUB_STEP_SUMMARY
+            echo "✅ Novas alterações enviadas para o GitHub Pages!"
           else
-            echo "Nenhuma alteração detectada para o website."
+            echo "ℹ️ Nenhuma alteração nova de código detectada, mas os arquivos estão sincronizados."
           fi
+
+          # 🔗 EXIBE O LINK SEMPRE (Fora do if/else para nunca falhar)
+          SITE_URL="https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/family-trackings/website/"
+          
+          echo "===================================================="
+          echo "🌐 WEBSITE DISPONÍVEL NO AR!"
+          echo "🔗 Link: $SITE_URL"
+          echo "===================================================="
+          
+          # Adiciona o link visível no sumário da Action quando a etapa ficar verde
+          echo "## 🚀 Deploy Realizado com Sucesso!" >> $GITHUB_STEP_SUMMARY
+          echo "O site multipágina do projeto **family-trackings** foi processado e publicado." >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "👉 **[Clique aqui para acessar o site do projeto]($SITE_URL)**" >> $GITHUB_STEP_SUMMARY
