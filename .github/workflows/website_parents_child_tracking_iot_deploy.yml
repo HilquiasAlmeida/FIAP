@@ -130,3 +130,4 @@ jobs:
           echo "O site e os arquivos do app foram publicados." >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "👉 **[Clique aqui para acessar o projeto]($SITE_URL)**" >> $GITHUB_STEP_SUMMARY
+          
