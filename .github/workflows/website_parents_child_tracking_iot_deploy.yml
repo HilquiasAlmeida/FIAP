@@ -12,7 +12,7 @@ permissions:
   contents: write
 
 jobs:
-  # --- ETAPA 1: BUILD ---
+  # --- ETAPA 1: BUILD (Adaptado para estrutura Django) ---
   build:
     name: build
     runs-on: ubuntu-latest
@@ -25,23 +25,35 @@ jobs:
           WORKSPACE_DIR="$GITHUB_WORKSPACE"
           PROJECT_ROOT="$WORKSPACE_DIR/Computer-Engineering/Projects/Python/Automation/family-trackings/parents-child-tracking-iot"
           WEB_DIR="$PROJECT_ROOT/web"
+          TRACKER_DIR="$WEB_DIR/family_project/parents_tracker"
           APP_DIR="$PROJECT_ROOT/app"
           
-          if [ ! -d "$WEB_DIR" ]; then
-            echo "Erro: O diretório do website não foi encontrado em $WEB_DIR"
+          if [ ! -d "$TRACKER_DIR" ]; then
+            echo "Erro: O diretório do tracker não foi encontrado em $TRACKER_DIR"
             exit 1
           fi
           
-          echo "📂 Organizando arquivos para publicação..."
-          mkdir -p "$WORKSPACE_DIR/build_output/family-trackings/website"
+          echo "📂 Organizando arquivos do Django para publicação estática..."
+          SITE_OUT="$WORKSPACE_DIR/build_output/family-trackings/website"
+          mkdir -p "$SITE_OUT"
           
-          # 1. Copia o conteúdo da web (HTML, CSS, JS, etc.)
-          cp -r "$WEB_DIR"/* "$WORKSPACE_DIR/build_output/family-trackings/website/"
+          # 1. Copia todos os templates HTML (index.html, arquitetura, demonstração, etc.) para a raiz do site
+          if [ -d "$TRACKER_DIR/templates/tracker" ]; then
+            cp -r "$TRACKER_DIR/templates/tracker"/* "$SITE_OUT/"
+            echo "✅ Templates HTML copiados com sucesso!"
+          fi
           
-          # 2. Copia a pasta app (com o main.py) para dentro do site
+          # 2. Copia os arquivos estáticos (CSS, JS) para a pasta assets do site
+          if [ -d "$TRACKER_DIR/static/assets" ]; then
+            mkdir -p "$SITE_OUT/assets"
+            cp -r "$TRACKER_DIR/static/assets"/* "$SITE_OUT/assets/"
+            echo "✅ Arquivos estáticos (CSS/JS) copiados com sucesso!"
+          fi
+          
+          # 3. Copia a pasta app (com o main.py) se existir
           if [ -d "$APP_DIR" ]; then
-            mkdir -p "$WORKSPACE_DIR/build_output/family-trackings/website/app"
-            cp -r "$APP_DIR"/* "$WORKSPACE_DIR/build_output/family-trackings/website/app/"
+            mkdir -p "$SITE_OUT/app"
+            cp -r "$APP_DIR"/* "$SITE_OUT/app/"
             echo "✅ Pasta app integrada ao site com sucesso!"
           fi
 
@@ -95,6 +107,9 @@ jobs:
           rm -rf family-trackings/website/*
           cp -r "$WORKSPACE_DIR/build_output/family-trackings/website/"* family-trackings/website/
 
+          # 🚀 CRIAÇÃO DO .NOJEKYLL (Evita bloqueio de pastas internas)
+          touch .nojekyll
+
           # 🚀 REDIRECIONAMENTO INTELIGENTE NA RAIZ LIMPA
           cat << 'EOF' > index.html
           <!DOCTYPE html>
@@ -112,7 +127,7 @@ jobs:
 
           git add -A
           if git status --porcelain | grep -q .; then
-            git commit -m "Deploy limpo: Remove lixo da raiz e atualiza redirecionamento [skip ci]"
+            git commit -m "Deploy limpo: Ajuste para estrutura Django e redirecionamento [skip ci]"
             git push origin gh-pages
             echo "✅ Alterações enviadas com sucesso para o GitHub Pages!"
           else
@@ -126,8 +141,7 @@ jobs:
           echo "🔗 Link: $SITE_URL"
           echo "===================================================="
           
-          echo "## 🚀 Deploy Realizado com Sucesso!" >> $GITHUB_STEP_SUMMARY
-          echo "O site e os arquivos do app foram publicados." >> $GITHUB_STEP_SUMMARY
+          echo "## 🚀 Realizado com Sucesso!" >> $GITHUB_STEP_SUMMARY
+          echo "O site Django foi adaptado e publicado." >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "👉 **[Clique aqui para acessar o projeto]($SITE_URL)**" >> $GITHUB_STEP_SUMMARY
-          
