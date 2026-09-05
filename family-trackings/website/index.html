@@ -1,32 +1,41 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Family Trackings - IoT</title>
-    <!-- Linkando o CSS unificado -->
-    <link rel="stylesheet" href="family_project/parents_tracker/static/css/style.css">
+    <title>family-trackings - Sistema Anti-Sequestro e Rastreamento Infantil</title>
+    <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
-
-    <div class="container">
-        <span class="badge">Projeto FIAP - Automação & IoT</span>
-        <h1>Family Trackings</h1>
-        <p>Sistema inteligente de rastreamento e monitoramento familiar integrado com dispositivos embarcados (ESP32) e aplicações multiplataforma.</p>
+    <header>
+        <a href="index.html" class="logo">🛰️ family-trackings</a>
+        <nav>
+            <ul>
+                <li><a href="index.html" class="active">Início</a></li>
+                <li><a href="wearables/dispositivos.html">Wearables</a></li>
+                <li><a href="arquitetura/tecnologia.html">Arquitetura & Satélite</a></li>
+                <li><a href="demonstrativo/simulator.html">Demonstrativo</a></li>
+                <li><a href="documentacao/seguranca.html">Documentação</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <h1>family-trackings: Rastreamento Infantil Off-Grid por Satélite</h1>
+        <p>Plataforma de hardware embarcado e monitoramento de missão crítica para segurança infantil[cite: 2], operando de forma totalmente independente de redes celulares terrestres.</p>
         
-        <div class="links">
-            <a href="#" class="btn">Acessar App Mobile</a>
-            <a href="#" class="btn" style="background: #e67e22;">Acessar Painel do Sistema</a>
+        <!-- Imagem de Destaque Principal -->
+        <div class="img-container">
+            <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1200&q=80" alt="Hardware embarcado e IoT">
         </div>
 
-        <div style="margin-top: 35px; border-top: 1px solid #eee; padding-top: 20px;">
-            <p style="font-size: 0.9rem; margin-bottom: 15px;">Integração com o Banco PostgreSQL e Django ativa.</p>
-            <button id="alertBtn">Testar Conexão IoT</button>
+        <div class="card" style="margin-top: 2rem;">
+            <h2>Visão Geral do Projeto</h2>
+            <p>O <strong>family-trackings</strong> foi desenvolvido para solucionar a falha crítica dos sistemas tradicionais: a dependência de redes móveis (4G/5G) e a facilidade de detecção de dispositivos volumosos[cite: 2]. Através de microcontroladores rodando <strong>Python embarcado</strong> e comunicação direta via <strong>satélite</strong>, o sistema garante resiliência contra jammers e áreas sem cobertura[cite: 2].</p>
+            <a href="demonstrativo/simulator.html" class="btn">Acessar Painel Demonstrativo 🚀</a>
         </div>
-    </div>
-
-    <!-- Linkando o JavaScript -->
-    <script src="family_project/parents_tracker/static/js/script.js"></script>
+    </main>
+    <footer>
+        <p>&copy; 2026 family-trackings Systems. Todos os direitos reservados.</p>
+    </footer>
 </body>
 </html>
