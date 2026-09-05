@@ -15,16 +15,12 @@ jobs:
   deploy-website:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
+      - name: 1. Checkout repository
         uses: actions/checkout@v4
 
-      - name: Deploy Website using Exact Path
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: 2. Build and Prepare Website Files
         run: |
           WORKSPACE_DIR="$GITHUB_WORKSPACE"
-          
-          # Caminho exato fornecido por você
           WEB_DIR="$WORKSPACE_DIR/Computer-Engineering/Projects/Python/Automation/family-trackings/parents-child-tracking-iot/web"
           
           if [ ! -d "$WEB_DIR" ]; then
@@ -33,7 +29,37 @@ jobs:
           fi
           
           echo "Pasta web encontrada com sucesso em: $WEB_DIR"
+          
+          # Cria a pasta de build local no runner
+          mkdir -p "$WORKSPACE_DIR/build_output/family-trackings/website"
+          cp -r "$WEB_DIR"/* "$WORKSPACE_DIR/build_output/family-trackings/website/"
+          
+          # Caminho exato do index.html na nova estrutura
+          INDEX_PATH="$WEB_DIR/family_project/parents_tracker/templates/tracker/index.html"
+          
+          if [ -f "$INDEX_PATH" ]; then
+            cp "$INDEX_PATH" "$WORKSPACE_DIR/build_output/family-trackings/website/index.html"
+            
+            # Ajusta automaticamente as tags do Django para links estáticos funcionarem no GitHub Pages
+            sed -i 's/{% load static %}//g' "$WORKSPACE_DIR/build_output/family-trackings/website/index.html"
+            sed -i "s/{% static 'css\/style.css' %}/family_project\/parents_tracker\/static\/css\/style.css/g" "$WORKSPACE_DIR/build_output/family-trackings/website/index.html"
+            sed -i "s/{% static 'js\/script.js' %}/family_project\/parents_tracker\/static\/js\/script.js/g" "$WORKSPACE_DIR/build_output/family-trackings/website/index.html"
+            
+            # Garante que links relativos antigos (como ../app/) apontem para os lugares certos se existirem
+            sed -i 's/href="\.\.\/app\/"/href="#app"/g' "$WORKSPACE_DIR/build_output/family-trackings/website/index.html"
+            sed -i 's/href="\.\.\/system\/"/href="#system"/g' "$WORKSPACE_DIR/build_output/family-trackings/website/index.html"
+            
+            echo "✅ Build concluído: Links e assets corrigidos com sucesso!"
+          else
+            echo "Aviso: index.html não foi encontrado no caminho: $INDEX_PATH"
+          fi
 
+      - name: 3. Deploy to GitHub Pages
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          WORKSPACE_DIR="$GITHUB_WORKSPACE"
+          
           git config --global user.name "GitHub Actions Bot"
           git config --global user.email "actions@github.com"
 
@@ -46,35 +72,25 @@ jobs:
 
           git checkout gh-pages || git checkout -b gh-pages
 
-          # Prepara a subpasta exata no GitHub Pages
           mkdir -p family-trackings/website
           rm -rf family-trackings/website/*
-
-          # 1. Copia toda a estrutura original mantendo o projeto Django intacto
-          cp -r "$WEB_DIR"/* family-trackings/website/
-
-          # 2. Extrai e posiciona o index.html na raiz do site do GitHub Pages usando o novo caminho (parents_tracker)
-          INDEX_PATH="$WEB_DIR/family_project/parents_tracker/templates/tracker/index.html"
-          
-          if [ -f "$INDEX_PATH" ]; then
-            cp "$INDEX_PATH" family-trackings/website/index.html
-            
-            # Ajusta automaticamente as tags do Django para os novos caminhos estáticos da pasta parents_tracker
-            sed -i 's/{% load static %}//g' family-trackings/website/index.html
-            sed -i "s/{% static 'css\/style.css' %}/family_project\/parents_tracker\/static\/css\/style.css/g" family-trackings/website/index.html
-            sed -i "s/{% static 'js\/script.js' %}/family_project\/parents_tracker\/static\/js\/script.js/g" family-trackings/website/index.html
-          else
-            echo "Aviso: index.html não foi encontrado no caminho especificado: $INDEX_PATH"
-          fi
+          cp -r "$WORKSPACE_DIR/build_output/family-trackings/website/"* family-trackings/website/
 
           git add .
           if git status --porcelain | grep -q .; then
-            git commit -m "Deploy automático: Ajustando rotas para a estrutura parents_tracker [skip ci]"
+            git commit -m "Deploy automático: Links e assets ajustados para o GitHub Pages [skip ci]"
             git push origin gh-pages
+            
+            SITE_URL="https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/family-trackings/website/"
+            
             echo "===================================================="
             echo "🌐 WEBSITE PUBLICADO COM SUCESSO!"
-            echo "🔗 Link: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/family-trackings/website/"
+            echo "🔗 Link: $SITE_URL"
             echo "===================================================="
+            
+            echo "### 🚀 Deploy Realizado com Sucesso!" >> $GITHUB_STEP_SUMMARY
+            echo "O build e o deploy do site do projeto FIAP foram concluídos." >> $GITHUB_STEP_SUMMARY
+            echo "👉 **[Clique aqui para acessar a página do projeto]($SITE_URL)**" >> $GITHUB_STEP_SUMMARY
           else
             echo "Nenhuma alteração detectada para o website."
           fi
