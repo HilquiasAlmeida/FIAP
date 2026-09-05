@@ -4,7 +4,7 @@ on:
   push:
     branches: [ main, master ]
     paths:
-      - 'Computer-Engineering/Projects/Python/Automation/family-trackings/parents-child-tracking-iot/web/**'
+      - 'Computer-Engineering/Projects/Python/Automation/family-trackings/parents-child-tracking-iot/**'
       - '.github/workflows/website_parents_child_tracking_iot_deploy.yml'
   workflow_dispatch:
 
@@ -20,28 +20,38 @@ jobs:
       - name: 1. Checkout repository
         uses: actions/checkout@v4
 
-      - name: 2. Build and Prepare Website Files
+      - name: 2. Build and Prepare Website & App Files
         run: |
           WORKSPACE_DIR="$GITHUB_WORKSPACE"
-          WEB_DIR="$WORKSPACE_DIR/Computer-Engineering/Projects/Python/Automation/family-trackings/parents-child-tracking-iot/web"
+          PROJECT_ROOT="$WORKSPACE_DIR/Computer-Engineering/Projects/Python/Automation/family-trackings/parents-child-tracking-iot"
+          WEB_DIR="$PROJECT_ROOT/web"
+          APP_DIR="$PROJECT_ROOT/app"
           
           if [ ! -d "$WEB_DIR" ]; then
             echo "Erro: O diretório do website não foi encontrado em $WEB_DIR"
             exit 1
           fi
           
-          echo "Pasta web encontrada com sucesso em: $WEB_DIR"
-          
+          echo "📂 Organizando arquivos para publicação..."
           mkdir -p "$WORKSPACE_DIR/build_output/family-trackings/website"
+          
+          # 1. Copia o conteúdo da web (HTML, CSS, JS, etc.)
           cp -r "$WEB_DIR"/* "$WORKSPACE_DIR/build_output/family-trackings/website/"
           
-          echo "✅ Build concluído com sucesso!"
+          # 2. Copia a pasta app (com o main.py) para dentro do site
+          if [ -d "$APP_DIR" ]; then
+            mkdir -p "$WORKSPACE_DIR/build_output/family-trackings/website/app"
+            cp -r "$APP_DIR"/* "$WORKSPACE_DIR/build_output/family-trackings/website/app/"
+            echo "✅ Pasta app integrada ao site com sucesso!"
+          fi
+
+          echo "✅ Build completo concluído!"
 
       - name: 3. Upload Website Artifact
         uses: actions/upload-artifact@v4
         with:
           name: website-files
-          path: build_output/build_output/family-trackings/website/ || path: build_output/family-trackings/website/
+          path: build_output/family-trackings/website/
 
   # --- ETAPA 2: DEPLOY WEBSITE ---
   deploy-website:
@@ -81,7 +91,7 @@ jobs:
           rm -rf family-trackings/website/*
           cp -r "$WORKSPACE_DIR/build_output/family-trackings/website/"* family-trackings/website/
 
-          # 🚀 ELIMINA O TEMPLATE ANTIGO DA RAIZ E CRIA UM REDIRECIONAMENTO INTELIGENTE
+          # 🚀 REDIRECIONAMENTO INTELIGENTE NA RAIZ
           cat << 'EOF' > index.html
           <!DOCTYPE html>
           <html>
@@ -98,7 +108,7 @@ jobs:
 
           git add .
           if git status --porcelain | grep -q .; then
-            git commit -m "Deploy automático: Substitui raiz por redirecionamento e atualiza site [skip ci]"
+            git commit -m "Deploy automático: Correção de path do artefato e atualização [skip ci]"
             git push origin gh-pages
             echo "✅ Alterações enviadas com sucesso para o GitHub Pages!"
           else
@@ -108,11 +118,11 @@ jobs:
           SITE_URL="https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/family-trackings/website/"
           
           echo "===================================================="
-          echo "🌐 WEBSITE DISPONÍVEL NO AR!"
+          echo "🌐 WEBSITE E CÓDIGO DISPONÍVEIS NO AR!"
           echo "🔗 Link: $SITE_URL"
           echo "===================================================="
           
           echo "## 🚀 Deploy Realizado com Sucesso!" >> $GITHUB_STEP_SUMMARY
-          echo "O site multipágina do projeto **family-trackings** foi publicado." >> $GITHUB_STEP_SUMMARY
+          echo "O site e os arquivos do app foram publicados." >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "👉 **[Clique aqui para acessar o projeto]($SITE_URL)**" >> $GITHUB_STEP_SUMMARY
