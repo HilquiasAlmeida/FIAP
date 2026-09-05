@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Demonstrativo - family-trackings</title>
+    <link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+    <header>
+        <h1>🛰️ family-trackings</h1>
+        <p style="color: #fff; margin: 0;">Painel de Rastreio em Tempo Real dos Pais</p>
+    </header>
+
+    <div class="container" style="max-width: 950px;">
+        <span class="badge" style="background: #e67e22;">Simulador Ativo</span>
+        <h1>Painel de Monitoramento Satelital</h1>
+        <p>Simulação em tempo real da recepção de telemetria dos acessórios infantis camuflados.</p>
+
+        <!-- Status da Rede Satelital -->
+        <div style="background: #f8f9fa; border: 1px solid #ddd; padding: 15px; border-radius: 8px; margin: 20px 0; text-align: left;">
+            <h3 style="color: #2c3e50; margin-bottom: 8px;">📡 Status da Conexão Satelital (LEO)</h3>
+            <p style="margin: 4px 0; font-size: 1rem;">• <strong>Satélites Visíveis:</strong> 4 em enlace direto</p>
+            <p style="margin: 4px 0; font-size: 1rem;">• <strong>Latência de Enlace:</strong> 1.2 segundos (Modo Off-Grid)</p>
+            <p style="margin: 4px 0; font-size: 1rem;">• <strong>Status da Rede:</strong> <span style="color: #27ae60; font-weight: bold;">Protegido contra Jammers / Sinal Estável</span></p>
+        </div>
+
+        <div style="display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; margin-top: 20px;">
+            <!-- Dispositivo 1 -->
+            <div style="flex: 1; min-width: 280px; background: #fff; border: 1px solid #ddd; padding: 20px; border-radius: 8px; text-align: left;">
+                <h4 style="color: #3f51b5; margin-bottom: 10px;">Dispositivo #01 (Broche do Casaco)</h4>
+                <p style="margin: 5px 0; font-size: 0.95rem;"><strong>Bateria:</strong> 88% (Est. 45 dias)</p>
+                <p style="margin: 5px 0; font-size: 0.95rem;"><strong>Coordenadas:</strong> -23.5505, -46.6333</p>
+                <p style="margin: 5px 0; font-size: 0.95rem;" id="status-01"><strong>Status:</strong> <span style="color: #27ae60;">Monitorando via Satélite</span></p>
+                <button onclick="dispararAlerta('01')" style="margin-top: 15px; width: 100%; background: #e74c3c;">Simular Pânico 🚨</button>
+            </div>
+
+            <!-- Dispositivo 2 -->
+            <div style="flex: 1; min-width: 280px; background: #fff; border: 1px solid #ddd; padding: 20px; border-radius: 8px; text-align: left;">
+                <h4 style="color: #3f51b5; margin-bottom: 10px;">Dispositivo #02 (Ponteira de Cadarço)</h4>
+                <p style="margin: 5px 0; font-size: 0.95rem;"><strong>Bateria:</strong> 94% (Est. 60 dias)</p>
+                <p style="margin: 5px 0; font-size: 0.95rem;"><strong>Coordenadas:</strong> -23.5508, -46.6336</p>
+                <p style="margin: 5px 0; font-size: 0.95rem;" id="status-02"><strong>Status:</strong> <span style="color: #27ae60;">Monitorando via Satélite</span></p>
+                <button onclick="dispararAlerta('02')" style="margin-top: 15px; width: 100%; background: #e74c3c;">Simular Pânico 🚨</button>
+            </div>
+        </div>
+
+        <div class="links">
+            <a href="../index.html" class="btn">🏠 Voltar ao Início</a>
+            <a href="../documentacao/seguranca.html" class="btn" style="background: #9b59b6;">Ver Documentação 📄</a>
+        </div>
+    </div>
+
+    <!-- Chamada do JavaScript para ativar a função dispararAlerta -->
+    <script src="../assets/js/script.js"></script>
+</body>
+</html>
