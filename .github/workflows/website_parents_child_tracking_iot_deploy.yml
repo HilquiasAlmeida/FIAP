@@ -33,16 +33,15 @@ jobs:
           echo "Pasta web encontrada com sucesso em: $WEB_DIR"
           
           mkdir -p "$WORKSPACE_DIR/build_output/family-trackings/website"
-          # Copia todos os arquivos da pasta web (HTML, CSS, JS e o main.py da web)
           cp -r "$WEB_DIR"/* "$WORKSPACE_DIR/build_output/family-trackings/website/"
           
-          echo "✅ Build concluído com sucesso (Web + main.py incluído)!"
+          echo "✅ Build concluído com sucesso!"
 
       - name: 3. Upload Website Artifact
         uses: actions/upload-artifact@v4
         with:
           name: website-files
-          path: build_output/family-trackings/website/
+          path: build_output/build_output/family-trackings/website/ || path: build_output/family-trackings/website/
 
   # --- ETAPA 2: DEPLOY WEBSITE ---
   deploy-website:
@@ -77,20 +76,35 @@ jobs:
 
           git checkout gh-pages || git checkout -b gh-pages
 
+          # Atualiza os arquivos do projeto na pasta correta
           mkdir -p family-trackings/website
           rm -rf family-trackings/website/*
           cp -r "$WORKSPACE_DIR/build_output/family-trackings/website/"* family-trackings/website/
 
+          # 🚀 ELIMINA O TEMPLATE ANTIGO DA RAIZ E CRIA UM REDIRECIONAMENTO INTELIGENTE
+          cat << 'EOF' > index.html
+          <!DOCTYPE html>
+          <html>
+          <head>
+              <meta charset="UTF-8">
+              <meta http-equiv="refresh" content="0; url=family-trackings/website/">
+              <title>Redirecionando para family-trackings...</title>
+          </head>
+          <body>
+              <p>Redirecionando para o projeto <a href="family-trackings/website/">family-trackings</a>...</p>
+          </body>
+          </html>
+          EOF
+
           git add .
           if git status --porcelain | grep -q .; then
-            git commit -m "Deploy automático: Atualização da web e main.py [skip ci]"
+            git commit -m "Deploy automático: Substitui raiz por redirecionamento e atualiza site [skip ci]"
             git push origin gh-pages
-            echo "✅ Novas alterações enviadas para o GitHub Pages!"
+            echo "✅ Alterações enviadas com sucesso para o GitHub Pages!"
           else
-            echo "ℹ️ Nenhuma alteração nova detectada, mas os arquivos estão sincronizados."
+            echo "ℹ️ Nenhuma alteração nova detectada."
           fi
 
-          # 🔗 EXIBE O LINK SEMPRE
           SITE_URL="https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/family-trackings/website/"
           
           echo "===================================================="
@@ -99,7 +113,6 @@ jobs:
           echo "===================================================="
           
           echo "## 🚀 Deploy Realizado com Sucesso!" >> $GITHUB_STEP_SUMMARY
-          echo "O site multipágina e o script do servidor web foram publicados." >> $GITHUB_STEP_SUMMARY
+          echo "O site multipágina do projeto **family-trackings** foi publicado." >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "👉 **[Clique aqui para acessar o projeto]($SITE_URL)**" >> $GITHUB_STEP_SUMMARY
-          
