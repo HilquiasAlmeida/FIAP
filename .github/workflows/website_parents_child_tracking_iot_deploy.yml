@@ -12,7 +12,8 @@ permissions:
   contents: write
 
 jobs:
-  deploy-website:
+  # --- JOB 1: BUILD (Prepara e valida os arquivos do site) ---
+  build:
     runs-on: ubuntu-latest
     steps:
       - name: 1. Checkout repository
@@ -34,25 +35,27 @@ jobs:
           mkdir -p "$WORKSPACE_DIR/build_output/family-trackings/website"
           cp -r "$WEB_DIR"/* "$WORKSPACE_DIR/build_output/family-trackings/website/"
           
-          # Caminho exato do index.html na nova estrutura
-          INDEX_PATH="$WEB_DIR/family_project/parents_tracker/templates/tracker/index.html"
-          
-          if [ -f "$INDEX_PATH" ]; then
-            cp "$INDEX_PATH" "$WORKSPACE_DIR/build_output/family-trackings/website/index.html"
-            
-            # Ajusta automaticamente as tags do Django para links estáticos funcionarem no GitHub Pages
-            sed -i 's/{% load static %}//g' "$WORKSPACE_DIR/build_output/family-trackings/website/index.html"
-            sed -i "s/{% static 'css\/style.css' %}/family_project\/parents_tracker\/static\/css\/style.css/g" "$WORKSPACE_DIR/build_output/family-trackings/website/index.html"
-            sed -i "s/{% static 'js\/script.js' %}/family_project\/parents_tracker\/static\/js\/script.js/g" "$WORKSPACE_DIR/build_output/family-trackings/website/index.html"
-            
-            # Garante que links relativos antigos (como ../app/) apontem para os lugares certos se existirem
-            sed -i 's/href="\.\.\/app\/"/href="#app"/g' "$WORKSPACE_DIR/build_output/family-trackings/website/index.html"
-            sed -i 's/href="\.\.\/system\/"/href="#system"/g' "$WORKSPACE_DIR/build_output/family-trackings/website/index.html"
-            
-            echo "✅ Build concluído: Links e assets corrigidos com sucesso!"
-          else
-            echo "Aviso: index.html não foi encontrado no caminho: $INDEX_PATH"
-          fi
+          echo "✅ Build concluído com sucesso!"
+
+      - name: 3. Upload Website Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: website-files
+          path: build_output/family-trackings/website/
+
+  # --- JOB 2: DEPLOY (Só roda se o build ficar verde) ---
+  deploy-website:
+    needs: build  # <-- É aqui que a mágica acontece: O deploy aguarda o build ficar verde!
+    runs-on: ubuntu-latest
+    steps:
+      - name: 1. Checkout repository
+        uses: actions/checkout@v4
+
+      - name: 2. Download Website Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: website-files
+          path: build_output/family-trackings/website/
 
       - name: 3. Deploy to GitHub Pages
         env:
@@ -78,7 +81,7 @@ jobs:
 
           git add .
           if git status --porcelain | grep -q .; then
-            git commit -m "Deploy automático: Links e assets ajustados para o GitHub Pages [skip ci]"
+            git commit -m "Deploy automático: Atualização do site multi-página family-trackings [skip ci]"
             git push origin gh-pages
             
             SITE_URL="https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/family-trackings/website/"
@@ -89,7 +92,7 @@ jobs:
             echo "===================================================="
             
             echo "### 🚀 Deploy Realizado com Sucesso!" >> $GITHUB_STEP_SUMMARY
-            echo "O build e o deploy do site do projeto FIAP foram concluídos." >> $GITHUB_STEP_SUMMARY
+            echo "O site multipágina do projeto **family-trackings** foi publicado." >> $GITHUB_STEP_SUMMARY
             echo "👉 **[Clique aqui para acessar a página do projeto]($SITE_URL)**" >> $GITHUB_STEP_SUMMARY
           else
             echo "Nenhuma alteração detectada para o website."
