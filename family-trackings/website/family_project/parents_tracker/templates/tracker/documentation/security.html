@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentação Técnica - family-trackings</title>
+    <link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+    <header>
+        <h1>🛰️ family-trackings</h1>
+        <p style="color: #fff; margin: 0;">Memorial Descritivo e Segurança de Dados</p>
+    </header>
+
+    <div class="container">
+        <span class="badge" style="background: #8e44ad;">Documentação Técnica</span>
+        <h1>Segurança e Arquitetura de Dados</h1>
+        <p>Diretrizes rigorosas de proteção à privacidade, criptografia e infraestrutura de backend do projeto.</p>
+
+        <div class="img-container">
+            <img src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=1200&q=80" alt="Criptografia e Segurança de Servidor">
+        </div>
+
+        <h2>Criptografia de Ponta a Ponta (AES-256)</h2>
+        <p>Para garantir que a localização da criança jamais seja interceptada por terceiros mal-intencionados, todos os pacotes de telemetria gerados pelo hardware em MicroPython são criptografados utilizando o padrão robusto <strong>AES-256</strong> (Advanced Encryption Standard) antes de serem enviados ao enlace de satélite.</p>
+
+        <h2 style="margin-top: 30px;">Arquitetura de Banco de Dados e Servidor</h2>
+        <p>O backend processa as requisições vindas da API da constelação de satélites e armazena os dados em um banco de dados relacional altamente seguro. A arquitetura conta com:</p>
+        <p style="text-align: left; padding: 0 20px;">
+            • <strong>Isolamento de Credenciais:</strong> Acesso restrito e autenticado exclusivamente para os responsáveis legais cadastrados.<br>
+            • <strong>Trilha de Auditoria (Logs):</strong> Registro imutável de todas as consultas de rotas e alertas de pânico disparados.<br>
+            • <strong>Conformidade com Privacidade:</strong> Retenção controlada de histórico geográfico visando a total proteção dos dados infantis.
+        </p>
+
+        <div class="links">
+            <a href="../index.html" class="btn">🏠 Voltar ao Início</a>
+            <a href="../wearables/dispositivos.html" class="btn" style="background: #3498db;">Ver Wearables 🛡️</a>
+        </div>
+    </div>
+</body>
+</html>
