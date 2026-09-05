@@ -12,6 +12,7 @@ permissions:
   contents: write
 
 jobs:
+  # --- ETAPA 1: BUILD ---
   build:
     name: build
     runs-on: ubuntu-latest
@@ -34,8 +35,10 @@ jobs:
           echo "📂 Organizando arquivos para publicação..."
           mkdir -p "$WORKSPACE_DIR/build_output/family-trackings/website"
           
+          # 1. Copia o conteúdo da web (HTML, CSS, JS, etc.)
           cp -r "$WEB_DIR"/* "$WORKSPACE_DIR/build_output/family-trackings/website/"
           
+          # 2. Copia a pasta app (com o main.py) para dentro do site
           if [ -d "$APP_DIR" ]; then
             mkdir -p "$WORKSPACE_DIR/build_output/family-trackings/website/app"
             cp -r "$APP_DIR"/* "$WORKSPACE_DIR/build_output/family-trackings/website/app/"
@@ -50,6 +53,7 @@ jobs:
           name: website-files
           path: build_output/family-trackings/website/
 
+  # --- ETAPA 2: DEPLOY WEBSITE ---
   deploy-website:
     needs: build
     name: deploy website
@@ -82,15 +86,16 @@ jobs:
 
           git checkout gh-pages || git checkout -b gh-pages
 
+          # 🧹 LIMPEZA SEGURA DA RAIZ: Remove lixo antigo da FIAP da raiz, 
+          # mas MANTÉM preservadas as pastas dos outros workflows (system e app-mobile)
+          find . -maxdepth 1 ! -name '.' ! -name '.git' ! -name 'family-trackings' -exec rm -rf {} +
+
           # Atualiza os arquivos do projeto na pasta correta
           mkdir -p family-trackings/website
           rm -rf family-trackings/website/*
           cp -r "$WORKSPACE_DIR/build_output/family-trackings/website/"* family-trackings/website/
 
-          # 🚀 CRIAÇÃO DO .NOJEKYLL (Evita que o GitHub bloqueie arquivos e pastas internas)
-          touch .nojekyll
-
-          # 🚀 REDIRECIONAMENTO INTELIGENTE NA RAIZ
+          # 🚀 REDIRECIONAMENTO INTELIGENTE NA RAIZ LIMPA
           cat << 'EOF' > index.html
           <!DOCTYPE html>
           <html>
@@ -105,9 +110,9 @@ jobs:
           </html>
           EOF
 
-          git add .
+          git add -A
           if git status --porcelain | grep -q .; then
-            git commit -m "Deploy automático: Adiciona .nojekyll, redirecionamento e atualiza site [skip ci]"
+            git commit -m "Deploy limpo: Remove lixo da raiz e atualiza redirecionamento [skip ci]"
             git push origin gh-pages
             echo "✅ Alterações enviadas com sucesso para o GitHub Pages!"
           else
