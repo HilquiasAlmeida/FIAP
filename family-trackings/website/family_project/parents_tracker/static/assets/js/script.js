@@ -1,9 +1,9 @@
 // family-trackings - Script de Interatividade do Painel Satelital
 
 document.addEventListener("DOMContentLoaded", function () {
-    console.log("family-trackings: Sistema de monitoramento satelital inicializado.");
+    console.log("family-trackings: Sistema de monitoramento satelital inicializado com sucesso!");
 
-    // Função para simular o disparo de alerta de pânico/perímetro
+    // 1. Função global para simular o disparo de alerta de pânico/perímetro (usada nos botões onclick)
     window.dispararAlerta = function (idDispositivo) {
         const mensagem = `🚨 ATENÇÃO: Alerta de emergência acionado para o dispositivo #${idDispositivo}!\n\nAs coordenadas geodésicas foram transmitidas com sucesso via satélite para o painel de rastreio dos pais.`;
         alert(mensagem);
@@ -14,4 +14,12 @@ document.addEventListener("DOMContentLoaded", function () {
             statusElement.innerHTML = '<span style="color: #ef4444; font-weight: bold;">ALERTA ATIVO / RESGATE EM ANDAMENTO</span>';
         }
     };
+
+    // 2. Listener opcional caso você decida usar um botão por ID no futuro
+    const alertBtn = document.getElementById("alertBtn");
+    if (alertBtn) {
+        alertBtn.addEventListener("click", function() {
+            alert("Sistema de rastreamento sincronizado com os dispositivos IoT.");
+        });
+    }
 });
