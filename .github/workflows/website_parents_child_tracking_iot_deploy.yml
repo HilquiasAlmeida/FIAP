@@ -12,7 +12,6 @@ permissions:
   contents: write
 
 jobs:
-  # --- ETAPA 1: BUILD ---
   build:
     name: build
     runs-on: ubuntu-latest
@@ -35,10 +34,8 @@ jobs:
           echo "📂 Organizando arquivos para publicação..."
           mkdir -p "$WORKSPACE_DIR/build_output/family-trackings/website"
           
-          # Copia o conteúdo da web
           cp -r "$WEB_DIR"/* "$WORKSPACE_DIR/build_output/family-trackings/website/"
           
-          # Copia a pasta app (com o main.py)
           if [ -d "$APP_DIR" ]; then
             mkdir -p "$WORKSPACE_DIR/build_output/family-trackings/website/app"
             cp -r "$APP_DIR"/* "$WORKSPACE_DIR/build_output/family-trackings/website/app/"
@@ -53,7 +50,6 @@ jobs:
           name: website-files
           path: build_output/family-trackings/website/
 
-  # --- ETAPA 2: DEPLOY WEBSITE ---
   deploy-website:
     needs: build
     name: deploy website
@@ -68,7 +64,7 @@ jobs:
           name: website-files
           path: build_output/family-trackings/website/
 
-      - name: 3. Deploy to GitHub Pages (Clean Root)
+      - name: 3. Deploy to GitHub Pages
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -81,21 +77,20 @@ jobs:
           mkdir -p temp_gh_pages_web
           cd temp_gh_pages_web
 
-          # Clona a branch gh-pages
           git clone --branch gh-pages --single-branch https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git . || \
           ( git init && git checkout -b gh-pages && git remote add origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git )
 
           git checkout gh-pages || git checkout -b gh-pages
 
-          # 🧹 LIMPEZA TOTAL DA RAIZ: Remove absolutamente TUDO na branch gh-pages, exceto o .git
-          echo "🧹 Removendo arquivos residuais antigos da raiz..."
-          find . -maxdepth 1 ! -name '.' ! -name '.git' -exec rm -rf {} +
-
-          # Recria a estrutura limpa com os arquivos novos
+          # Atualiza os arquivos do projeto na pasta correta
           mkdir -p family-trackings/website
+          rm -rf family-trackings/website/*
           cp -r "$WORKSPACE_DIR/build_output/family-trackings/website/"* family-trackings/website/
 
-          # Cria o novo index.html de redirecionamento limpo na raiz
+          # 🚀 CRIAÇÃO DO .NOJEKYLL (Evita que o GitHub bloqueie arquivos e pastas internas)
+          touch .nojekyll
+
+          # 🚀 REDIRECIONAMENTO INTELIGENTE NA RAIZ
           cat << 'EOF' > index.html
           <!DOCTYPE html>
           <html>
@@ -110,18 +105,23 @@ jobs:
           </html>
           EOF
 
-          git add -A
+          git add .
           if git status --porcelain | grep -q .; then
-            git commit -m "Deploy limpo: Eliminação de arquivos antigos da FIAP e atualização [skip ci]"
+            git commit -m "Deploy automático: Adiciona .nojekyll, redirecionamento e atualiza site [skip ci]"
             git push origin gh-pages
-            echo "✅ Branch gh-pages limpa e atualizada com sucesso!"
+            echo "✅ Alterações enviadas com sucesso para o GitHub Pages!"
           else
-            echo "ℹ️ Nenhuma alteração detectada."
+            echo "ℹ️ Nenhuma alteração nova detectada."
           fi
 
           SITE_URL="https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/family-trackings/website/"
           
           echo "===================================================="
-          echo "🌐 URL DO PROJETO:"
-          echo "🔗 $SITE_URL"
+          echo "🌐 WEBSITE E CÓDIGO DISPONÍVEIS NO AR!"
+          echo "🔗 Link: $SITE_URL"
           echo "===================================================="
+          
+          echo "## 🚀 Deploy Realizado com Sucesso!" >> $GITHUB_STEP_SUMMARY
+          echo "O site e os arquivos do app foram publicados." >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "👉 **[Clique aqui para acessar o projeto]($SITE_URL)**" >> $GITHUB_STEP_SUMMARY
